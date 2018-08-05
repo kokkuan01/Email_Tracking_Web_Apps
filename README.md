@@ -15,3 +15,11 @@ emails to be stored in a backend database</li>
 and use this in reference to the clients</li>
 <li>Provide a synchronization log to allow the NGO’s volunteers to work on multiple emails at the same
 time.</li>
+ </ul>
+
+# Libraries and Modules Used
+<ul>
+  <li>create-react-app => To create React application</li>
+  <li>react-router => To enable routing in React application</li>
+  <li>react-router-dom => DOM binding on react-router</li>
+</ul>
