@@ -44,26 +44,25 @@ class LoginPage extends Component {
     }
 
     return (
-      <div id="root">
-      <div className="App">
+      <div id="LoginPage">
+        <div className="App">
+          <div className="Login">
+            <div className="LogoDiv">
+              <img className="Logo" src="/images/logo.png" alt="Befrienders"/>
+            </div>
+            <form className="Form" method="post" onSubmit={this.submit}>
+              <input className="Input" onChange={this.handleChange} placeholder="Username" type="text" name="username" required/>
+              <br/>
 
-        <div className="Login">
-          <div className="LogoDiv">
-            <img className="Logo" src="/images/logo.png" alt="Befrienders"/>
+              <input className="Input" onChange={this.handleChange} placeholder="Password" type="password" name="password" required/>
+              <br/>
+
+              <button className="Button" type="submit" value="Login">
+                Login
+              </button>
+            </form>
           </div>
-          <form className="Form" method="post" onSubmit={this.submit}>
-            <input className="Input" onChange={this.handleChange} placeholder="Username" type="text" name="username" required/>
-            <br/>
-
-            <input className="Input" onChange={this.handleChange} placeholder="Password" type="password" name="password" required/>
-            <br/>
-
-            <button className="Button" type="submit" value="Login">
-              Login
-            </button>
-          </form>
         </div>
-      </div>
       </div>
     );
   }

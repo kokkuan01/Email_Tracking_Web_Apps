@@ -1,8 +1,10 @@
-#root{
+#LoginPage{
   display:table;
   position: absolute;
   background-image: url('/images/loginBackground.jpg');
   background-size: cover;
+  height: 100%;
+  width:100%;
 }
 
 .App {
@@ -28,10 +30,6 @@
   margin-bottom: 10px;
 }
 
-.Form{
-
-}
-
 .Input{
   background-color: #fff;
     border: 1px solid #E1EAF0;
@@ -46,7 +44,7 @@
 .Button{
   margin-top: 15px;
   color: #fff;
-  background-color: #96307E;
+  background-color:green;
   padding: 13px 15px;
   border-radius: 5px;
   width: 100%;

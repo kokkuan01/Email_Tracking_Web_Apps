@@ -1,16 +1,15 @@
 import React, {Component} from "react";
-import {Router, Route, Switch} from "react-router";
-
-import Login from "./LoginPage";
-import MainPage from "./MainPage";
+import {BrowserRouter as Router,Route,Switch} from "react-router-dom";
+import LoginPage from "./LoginPage";
+import InboxPage from "./InboxPage";
 
 class App extends Component{
   render(){
     return(
-      <Router history={this.props.history}>
+      <Router>
         <Switch>
-          <Route exact path='/' component={Login}/>
-          <Route path='/inbox' componet={MainPage}/>
+          <Route exact path='/' component={LoginPage}/>
+          <Route path='/inbox' component={InboxPage}/>
         </Switch>
       </Router>
     );
