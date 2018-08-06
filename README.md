@@ -22,4 +22,5 @@ time.</li>
   <li>create-react-app => To create React application</li>
   <li>react-router => To enable routing in React application</li>
   <li>react-router-dom => DOM binding on react-router</li>
+  <li>react-list => infinite list</li>
 </ul>
