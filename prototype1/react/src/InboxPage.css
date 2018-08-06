@@ -1,1 +1,25 @@
+#InboxPage{
+  display: flex;
+  flex-direction: column;
+  height:100%;
+  width:100%;
+}
 
+.TopBar{
+  flex-basis: 30px;
+  background-color: green;
+}
+
+.Rest{
+  display: flex;
+  height:100%;
+  width:100%;
+}
+
+.Menu{
+  flex-basis: 30%;
+}
+
+.Inbox{
+  flex-basis: 70%;
+}
