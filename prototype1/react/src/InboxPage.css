@@ -53,6 +53,10 @@
 
 }
 
+.Link{
+  text-decoration: none;
+}
+
 .EmailButton{
   display: flex;
   flex-direction: row;
@@ -62,6 +66,7 @@
   border: 1px white solid;
   width:100%;
   border-bottom: black 1px solid;
+
 }
 
 .EmailSender{
