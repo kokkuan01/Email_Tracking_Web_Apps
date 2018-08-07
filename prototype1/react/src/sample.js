@@ -86,3 +86,27 @@ export const sent = [
     date:"Aug 7"
   }
 ];
+
+export const emailExample=[
+  {
+    sender:"Chan Kok Kuan",
+    date:"Aug 1",
+    content:"",
+    attachment:"Turnitin Report.pdf"
+  },
+  {
+    sender:"Lim Lee Tan",
+    date:"Aug 2",
+    content:"",
+  },
+  {
+    sender:"Chan Kok Kuan",
+    date:"Aug 3",
+    content:"",
+  },
+  {
+    sender:"Lim Lee Tan",
+    date:"Aug 4",
+    content:"",
+  }
+];

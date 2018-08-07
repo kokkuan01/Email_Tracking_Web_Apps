@@ -3,6 +3,7 @@
 }
 
 .Reply{
+  margin:10px;
   resize: none;
   width: 90%;
   height: 70px;
@@ -13,4 +14,15 @@
   color:white;
   border: none;
   padding : 10px 20px;
+}
+
+.ItemTitle{
+  padding-top : 10px;
+  padding-bottom : 10px;
+  background-color: #D3D3D3;
+  border-top: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  padding-left:20px;
+  padding-right:50px;
 }
