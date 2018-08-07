@@ -23,4 +23,5 @@ time.</li>
   <li>react-router => To enable routing in React application</li>
   <li>react-router-dom => DOM binding on react-router</li>
   <li>react-list => infinite list</li>
+  <li>react-sanfona => collapse item</li>
 </ul>
