@@ -48,3 +48,33 @@
   color:#fff;
   height:50px;
 }
+
+.EmailDiv{
+
+}
+
+.EmailButton{
+  display: flex;
+  flex-direction: row;
+  color:black;
+  height:40px;
+  background-color: white;
+  border: 1px white solid;
+  width:100%;
+  border-bottom: black 1px solid;
+}
+
+.EmailSender{
+  text-align: left;
+  flex-basis: 20%;
+}
+
+.EmailTitle{
+  text-align: left;
+  flex-basis: 70%;
+}
+
+.EmailDate{
+
+  flex-basis: 10%;
+}

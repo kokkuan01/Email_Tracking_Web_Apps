@@ -3,13 +3,43 @@ import './InboxPage.css';
 import ReactList from 'react-list';
 import {Link} from 'react-router-dom';
 
+const unsend = [
+  {
+    sender:"Chan Kok Kuan",
+    title:"A package from order 05236788056761 has been shipped",
+    date:"Aug 7"
+  },
+  {
+    sender:"Chan Kok Kuan",
+    title:"Testing",
+    date:"Aug 7"
+  },
+  {
+    sender:"Chan Kok Kuan",
+    title:"Testing",
+    date:"Aug 7"
+  },
+  {
+    sender:"Chan Kok Kuan",
+    title:"Testing",
+    date:"Aug 7"
+  },
+  {
+    sender:"Chan Kok Kuan",
+    title:"Testing",
+    date:"Aug 7"
+  }
+];
+
 class InboxPage extends Component{
   renderUnsent(index, key){
     return(
-      <div
-      key={key}
-      >
-        {index}
+      <div className="EmailDiv" key={key}>
+        <button className="EmailButton">
+          <div className="EmailSender">{unsend[index].sender}</div>
+          <div className="EmailTitle">{unsend[index].title}</div>
+          <div className="EmailDate">{unsend[index].date}</div>
+        </button>
       </div>
     );
   }
@@ -30,7 +60,7 @@ class InboxPage extends Component{
           <div className="Inbox">
             <ReactList
               itemRenderer={this.renderUnsent}
-              length={1000}
+              length={5}
               type='variable'
               axie='x'/>
           </div>
