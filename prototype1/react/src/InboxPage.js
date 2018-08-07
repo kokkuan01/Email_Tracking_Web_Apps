@@ -2,50 +2,70 @@ import React,{Component} from 'react';
 import './InboxPage.css';
 import ReactList from 'react-list';
 import {Link} from 'react-router-dom';
+import {unsend,replying,sent} from './sample';
 
-const unsend = [
-  {
-    sender:"Client1",
-    title:"A package from order 05236788056761 has been shipped",
-    date:"Aug 7"
-  },
-  {
-    sender:"Client2",
-    title:"Testing",
-    date:"Aug 7"
-  },
-  {
-    sender:"Client3",
-    title:"Testing",
-    date:"Aug 7"
-  },
-  {
-    sender:"Client4",
-    title:"Testing",
-    date:"Aug 7"
-  },
-  {
-    sender:"Client5",
-    title:"Testing",
-    date:"Aug 7"
-  }
-];
+const queryString = require('query-string');
+const alert = (e)=>{
+  window.alert("Cannot Click On Email That is replying");
+};
 
 class InboxPage extends Component{
-  renderUnsent(index, key){
+  constructor(props){
+    super(props);
+
+    var parsed = queryString.parse(this.props.location.search);
+
+    this.state={
+      inbox:parsed.inbox?parsed.inbox:null,
+      time:0
+    }
+
+    this.renderInbox = this.renderInbox.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.replay = this.replay.bind(this);
+  }
+
+  renderInbox(index, key){
     const url = "/inbox/" + key;
 
-    return(
-      <div className="EmailDiv" key={key}>
-        <Link to={url} params={{id:1}} className="Link">
-          <button className="EmailButton">
-            <div className="EmailSender">{unsend[index].sender}</div>
-            <div className="EmailTitle">{unsend[index].title}</div>
-            <div className="EmailDate">{unsend[index].date}</div>
+    if(this.state.inbox==='unsend' || this.state.inbox === null){
+      return(
+        <div className="EmailDiv" key={key}>
+          <Link to={url} params={{id:1}} className="Link">
+            <button className="EmailButton">
+              <div className="EmailSender">{unsend[index].sender}</div>
+              <div className="EmailTitle">{unsend[index].title}</div>
+              <div className="EmailDate">{unsend[index].date}</div>
+            </button>
+          </Link>
+        </div>
+      );
+    }
+    else if(this.state.inbox === 'replying'){
+      return(
+        <div className="EmailDiv" key={key}>
+          <button className="EmailButton" onClick={alert}>
+            <div className="EmailSender">{replying[index].sender}</div>
+            <div className="EmailTitle">{replying[index].title}</div>
+            <div className="EmailDate">{replying[index].date}</div>
+            <div className="ReplyBy">{replying[index].by}</div>
           </button>
-        </Link>
-      </div>
-    );
+        </div>
+      );
+    }
+    else{
+      return(
+        <div className="EmailDiv" key={key}>
+          <Link to={url} params={{id:1}} className="Link">
+            <button className="EmailButton">
+              <div className="EmailSender">{sent[index].sender}</div>
+              <div className="EmailTitle">{sent[index].title}</div>
+              <div className="EmailDate">{sent[index].date}</div>
+            </button>
+          </Link>
+        </div>
+      );
+    }
   }
 
   logout(event){
@@ -55,7 +75,30 @@ class InboxPage extends Component{
     }
   }
 
+  onClick(e){
+    this.setState({
+      time:1
+    });
+  }
+
+  replay(){
+    var parsed = queryString.parse(this.props.location.search);
+    this.setState({
+      inbox:parsed.inbox?parsed.inbox:null,
+      time:0
+    });
+  }
+
+  componentDidUpdate(){
+    if(this.state.time > 0)
+      this.replay();
+  }
+
   render() {
+    let MenuReplier = <div></div>
+    if(this.state.inbox === 'replying')
+      MenuReplier =  <div className="MenuReplier">Replying By</div>
+
     return (
       <div id="InboxPage">
         <div className="TopBar">
@@ -64,13 +107,25 @@ class InboxPage extends Component{
         <div className="Rest">
           <div className="Menu">
             <img className="Logo" src="../images/logo.png" alt="LOGO"/>
-            <button className="SidebarButton">Unsent</button>
-            <button className="SidebarButton">Replying</button>
-            <button className="SidebarButton">Sent</button>
+            <Link to={{pathname:"/inbox",search:"?inbox=unsend"}} onClick={this.onClick}>
+              <button className="SidebarButton">Unsent</button>
+            </Link>
+            <Link to={{pathname:"/inbox",search:"?inbox=replying"}} onClick={this.onClick}>
+              <button className="SidebarButton">Replying</button>
+            </Link>
+            <Link to={{pathname:"/inbox",search:"?inbox=sent"}} onClick={this.onClick}>
+              <button className="SidebarButton">Sent</button>
+            </Link>
           </div>
           <div className="Inbox">
+            <div className="EmailMenu">
+              <div className="MenuSender">Sender</div>
+              <div className="MenuTitle">Email Title</div>
+              <div className="MenuDate">Date</div>
+              {MenuReplier}
+            </div>
             <ReactList
-              itemRenderer={this.renderUnsent}
+              itemRenderer={this.renderInbox}
               length={5}
               type='variable'
               axie='x'/>

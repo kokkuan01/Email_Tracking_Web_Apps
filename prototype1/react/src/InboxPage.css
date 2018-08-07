@@ -43,22 +43,19 @@
 }
 
 .SidebarButton{
+  width:100%;
   background-color: green;
   border: 1px white solid;
   color:#fff;
   height:50px;
 }
 
-.EmailDiv{
-
-}
-
 .Link{
   text-decoration: none;
 }
-
-.EmailButton{
+.EmailMenu{
   display: flex;
+  align-items: center;
   flex-direction: row;
   color:black;
   height:40px;
@@ -66,7 +63,39 @@
   border: 1px white solid;
   width:100%;
   border-bottom: black 1px solid;
+}
 
+.MenuSender{
+  text-align: left;
+  flex-basis: 20%;
+}
+
+.MenuTitle{
+  text-align: left;
+  flex-basis: 70%;
+}
+
+.MenuDate{
+  flex-basis: 10%;
+  text-align: center;
+}
+
+.MenuReplier{
+  text-align: left;
+  flex-basis: 20%;
+  line-height: 1.5;
+}
+
+.EmailButton{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  color:black;
+  height:40px;
+  background-color: white;
+  border: 1px white solid;
+  width:100%;
+  border-bottom: black 1px solid;
 }
 
 .EmailSender{
@@ -80,6 +109,11 @@
 }
 
 .EmailDate{
-
   flex-basis: 10%;
+}
+
+.ReplyBy{
+  text-align: left;
+  flex-basis: 20%;
+  line-height: 1.5;
 }

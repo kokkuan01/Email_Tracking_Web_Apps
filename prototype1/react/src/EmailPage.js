@@ -1,8 +1,19 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
+import './EmailPage.css';
 
 class EmailPage extends Component{
+  constructor(props){
+    super(props);
+
+    this.onfocus = this.onfocus.bind(this);
+  }
+
+  onfocus(event){
+    event.target.style.height = '120px';
+  }
+
   render() {
-    console.log(this.props.match.params.id?this.props.match.params.id:'');
     return (
       <div id="InboxPage">
         <div className="TopBar">
@@ -11,9 +22,15 @@ class EmailPage extends Component{
         <div className="Rest">
           <div className="Menu">
             <img className="Logo" src="../images/logo.png" alt="LOGO"/>
-            <button className="SidebarButton">Unsent</button>
-            <button className="SidebarButton">Replying</button>
-            <button className="SidebarButton">Sent</button>
+            <Link to={{pathname:"/inbox",search:"?inbox=unsend"}}>
+              <button className="SidebarButton">Unsent</button>
+            </Link>
+            <Link to="/inbox">
+              <button className="SidebarButton">Replying</button>
+            </Link>
+            <Link to="/inbox">
+              <button className="SidebarButton">Sent</button>
+            </Link>
           </div>
           <div className="Email">
             <div className="Title">
@@ -22,6 +39,13 @@ class EmailPage extends Component{
             <div className="EmailContent">
             </div>
             <div className="ReplyBox">
+              <form>
+                <textarea className="Reply" placeholder="Reply" onFocus={this.onfocus}/>
+                <br/>
+                <button className="SubmitButton" type="submit">
+                  Submit
+                </button>
+              </form>
             </div>
           </div>
         </div>
