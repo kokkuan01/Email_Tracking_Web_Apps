@@ -1,25 +1,46 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
+import {Link,Redirect,Route,Switch} from 'react-router-dom';
 import './EmailPage.css';
 import { Accordion, AccordionItem } from 'react-sanfona';
 import {emailExample} from './sample';
+import AddInfoPage from './AddInfoPage.js';
 
 class EmailPage extends Component{
   constructor(props){
     super(props);
-
+    this.state={
+      submit:false
+    };
+    this.logout = this.logout.bind(this);
     this.onfocus = this.onfocus.bind(this);
+  }
+
+  logout(event){
+    var choice = window.confirm("Are you sure to log out?");
+    if(!choice){
+      event.preventDefault();
+    }
   }
 
   onfocus(event){
     event.target.style.height = '120px';
+    console.log(event.target);
   }
 
   render() {
+    if(this.state.submit){
+      return(
+        <Switch>
+          <Redirect from='/inbox/:id' to='/inbox/:id/addInfo'/>
+          <Route path='/inbox/:id/addInfo' component={AddInfoPage}/>
+        </Switch>
+      );
+    }
+
     return (
       <div id="InboxPage">
         <div className="TopBar">
-
+          <Link className="Logout" to="/" onClick={this.logout}>Logout</Link>
         </div>
         <div className="Rest">
           <div className="Menu">
@@ -41,6 +62,7 @@ class EmailPage extends Component{
             <div className="EmailContent">
                 <Accordion  allowMultiple={true}>
                   {emailExample.map((item,index) => {
+                    console.log(index);
                     let expanded;
                     let title =
                       <div className="ItemTitle">
@@ -56,12 +78,13 @@ class EmailPage extends Component{
                     if(emailExample.length === (index + 1) ){
                       expanded = true;
                     }
+
                     return (
                       <AccordionItem key={index} title={title}
                         expanded={expanded}
                       >
-                        <div>
-                          123
+                        <div className="ItemContent">
+                          {item.content}
                         </div>
                       </AccordionItem>
                     );
@@ -69,7 +92,9 @@ class EmailPage extends Component{
                 </Accordion>
             </div>
             <div className="ReplyBox">
-              <form>
+              <form method="post" onSubmit={(event)=>{event.preventDefault();
+                this.setState({submit:true});
+              }}>
                 <textarea className="Reply" placeholder="Reply" onFocus={this.onfocus}/>
                 <br/>
                 <button className="SubmitButton" type="submit">
@@ -81,6 +106,7 @@ class EmailPage extends Component{
         </div>
       </div>
     );
+
   }
 }
 

@@ -1,6 +1,6 @@
-export const unsend = [
+export var unsend = [
   {
-    sender:"Client1",
+    sender:"Lim Lee Tan",
     title:"A package from order 05236788056761 has been shipped",
     date:"Aug 7"
   },
@@ -26,7 +26,7 @@ export const unsend = [
   }
 ];
 
-export const replying = [
+export var replying = [
   {
     sender:"Client2",
     title:"A package from order 05236788056761 has been shipped",
@@ -59,7 +59,7 @@ export const replying = [
   }
 ];
 
-export const sent = [
+export var sent = [
   {
     sender:"Client4",
     title:"A package from order 05236788056761 has been shipped",
@@ -87,26 +87,30 @@ export const sent = [
   }
 ];
 
-export const emailExample=[
+export var emailExample=[
   {
-    sender:"Chan Kok Kuan",
+    sender:"Lim Lee Tan",
     date:"Aug 1",
-    content:"",
+    content:"Sir, I am Chan Kok Kuan who is taking Client email tracking system for an NGO. This is my logbook for week 2.",
     attachment:"Turnitin Report.pdf"
   },
   {
-    sender:"Lim Lee Tan",
+    sender:"Chan Kok Kuan",
     date:"Aug 2",
-    content:"",
+    content:"ok, received with thanks.",
+  },
+  {
+    sender:"Lim Lee Tan",
+    date:"Aug 3",
+    content:`Hi
+
+Can we meet up this coming Thursday 9 Aug at 3 p.m. to discuss your FYP progress at this point of time ?
+
+Please print out a hardcopy of your FYP log sheet and bring it with you for me to sign when you come for the meeting.`
   },
   {
     sender:"Chan Kok Kuan",
-    date:"Aug 3",
-    content:"",
-  },
-  {
-    sender:"Lim Lee Tan",
     date:"Aug 4",
-    content:"",
+    content:"Yes, I will go to your office at 3 p.m. on 9 Aug.",
   }
 ];

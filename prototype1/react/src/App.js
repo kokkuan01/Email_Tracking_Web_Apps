@@ -3,6 +3,7 @@ import {BrowserRouter as Router,Route,Switch} from "react-router-dom";
 import LoginPage from "./LoginPage";
 import InboxPage from "./InboxPage";
 import EmailPage from "./EmailPage";
+import AddInfoPage from "./AddInfoPage";
 
 class App extends Component{
   render(){
@@ -11,7 +12,8 @@ class App extends Component{
         <Switch>
           <Route exact path='/' component={LoginPage}/>
           <Route exact path='/inbox' component={InboxPage}/>
-          <Route path='/inbox/:id' component={EmailPage}/>
+          <Route exact path='/inbox/:id' component={EmailPage}/>
+          <Route path='/inbox/:id/addInfo' component={AddInfoPage}/>
         </Switch>
       </Router>
     );
