@@ -4,6 +4,7 @@ import './EmailPage.css';
 import { Accordion, AccordionItem } from 'react-sanfona';
 import {emailExample} from './sample';
 import AddInfoPage from './AddInfoPage.js';
+import EmailConversation from './EmailConversation';
 
 class EmailPage extends Component{
   constructor(props){
@@ -59,12 +60,13 @@ class EmailPage extends Component{
           <hr />
           <div className="row">
             <div className="col-sm-3 col-md-2">
-                <ul className="nav nav-pills nav-stacked">
-                    <li className="active"><a href="/">Inbox</a></li>
-                    <li><a href="http://www.jquery2dotnet.com">Replying</a></li>
-                    <li><a href="http://www.jquery2dotnet.com">Sent</a></li>
-                </ul>
+              <ul className="nav nav-pills nav-stacked">
+                  <li><Link to={{pathname:"/inbox",search:"?inbox=unsend"}} onClick={this.onClick}>Inbox</Link></li>
+                  <li><Link to={{pathname:"/inbox",search:"?inbox=replying"}} onClick={this.onClick}>Replying</Link></li>
+                  <li><Link to={{pathname:"/inbox",search:"?inbox=sent"}} onClick={this.onClick}>Sent</Link></li>
+              </ul>
             </div>
+            <EmailConversation/>
           </div>
         </div>
       </div>

@@ -78,6 +78,7 @@ class InboxPage extends Component{
   renderItem(index, key){
     return(
       <EmailButton key={key} id={index}
+      inbox={this.state.inbox}
        name={this.state.data[index].sender}
        title={this.state.data[index].title}
        firstLine={this.state.data[index].firstLine}
@@ -112,7 +113,7 @@ class InboxPage extends Component{
                     <span className="glyphicon glyphicon-refresh"></span> 
                   </button>
                   <div className="pull-right">
-                    <span className="text-muted"><b>1</b>–<b>50</b> of <b>277</b></span>
+                    <span className="text-muted"><b>1</b>–<b>5</b> of <b>5</b></span>
                     <div className="btn-group btn-group-sm">
                         <button type="button" className="btn btn-default">
                             <span className="glyphicon glyphicon-chevron-left"></span>
@@ -136,7 +137,7 @@ class InboxPage extends Component{
             <div className="col-md-10">
               <div className="tab-content">
                 <div className="tab-pane fade in active" id="home">
-                  <div className="list-group">
+                  <div className="list-group" style={{overflow: 'auto',maxHeight:550}}>
                     <ReactList
                       itemRenderer={this.renderItem}
                       length={this.state.data.length}
@@ -147,6 +148,10 @@ class InboxPage extends Component{
               </div>
             </div>
           </div>
+        </div>
+        <div style={{display:'none'}} id = "alert" className="navbar-fixed-top alert alert-danger">
+          <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          <strong>Cannot Open Email That Is Being Replied</strong>
         </div>
       </div>
     );
