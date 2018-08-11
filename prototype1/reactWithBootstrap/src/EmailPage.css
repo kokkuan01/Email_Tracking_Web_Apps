@@ -1,0 +1,33 @@
+.Email{
+  width:100%;
+}
+
+.Reply{
+  margin:10px;
+  resize: none;
+  width: 90%;
+  height: 70px;
+}
+
+.SubmitButton{
+  background-color: green;
+  color:white;
+  border: none;
+  padding : 10px 20px;
+}
+
+.ItemTitle{
+  padding-top : 10px;
+  padding-bottom : 10px;
+  background-color: #E3E3E3;
+  border-top: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  padding-left:20px;
+  padding-right:50px;
+}
+
+.ItemContent{
+  white-space: pre-wrap;
+  padding : 10px 5px;
+}

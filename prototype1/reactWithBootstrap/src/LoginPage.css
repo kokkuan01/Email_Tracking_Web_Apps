@@ -1,0 +1,52 @@
+#LoginPage{
+  display:table;
+  position: absolute;
+  background-image: url('/images/loginBackground.jpg');
+  background-size: cover;
+  height: 100%;
+  width:100%;
+}
+
+.App {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.Login{
+  width: 330px;
+  margin: auto;
+  position: relative;
+}
+
+.LogoDiv{
+  width: 330px;
+  margin: auto;
+  position: relative;
+}
+
+.Logo{
+  width:200px;
+  height:70px;
+  margin-bottom: 10px;
+}
+
+input[type="text"],input[type="password"]{
+  background-color: #fff;
+  border: 1px solid #E1EAF0;
+  padding: 20px 15px;
+  border-radius: 5px;
+  cursor: text;
+  width: 100%;
+  transition: all 0.1s linear;
+  margin-bottom:15px;
+}
+
+.Button{
+  color: #fff;
+  background-color:green;
+  padding: 13px 15px;
+  border-radius: 5px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.1s linear;
+}
