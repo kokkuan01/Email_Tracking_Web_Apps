@@ -3,12 +3,11 @@ import {Accordion,AccordionItem} from 'react-sanfona';
 import {emailExample} from './sample';
 import {Link} from 'react-router-dom';
 
-class EmailConversation extends Component{
+class AdminEmailConversation extends Component{
   constructor(props){
     super(props);
     this.displayComment = this.displayComment.bind(this);
     this.displayTitle = this.displayTitle.bind(this);
-    this.displayReply = this.displayReply.bind(this);
   }
 
   displayTitle(item){
@@ -39,25 +38,6 @@ class EmailConversation extends Component{
             <br/>
             Comment: <span>{comment}</span>
           </div>
-      );
-    }
-  }
-
-  displayReply(){
-
-    if(this.props.inbox === 'unsend' || this.props.inbox===null){
-      return(
-        <div className="panel-footer">
-         <div className="form-group">
-           <textarea className="form-control textarea" rows="5" placeholder="Click Here to Reply"/>
-           <hr/>
-           <textarea className="form-control textarea" rows="5" placeholder="Click Here to Comment"/>
-           </div>
-          <div className="pull-right">
-              <Link to="/inbox" className="btn btn-success btn-sm"><i className="fa fa-reply"></i> Reply</Link>
-          </div>
-          <div className="clearfix"></div>
-        </div>
       );
     }
   }
@@ -101,7 +81,20 @@ class EmailConversation extends Component{
                   );
                 })}
                </Accordion>
-               {this.displayReply()}
+               <div className="panel-footer">
+                <div className="form-group">
+                  <div>
+                    <h1 style={{margin:10}} className="lead no-margin text-primary">Email Report</h1>
+                  </div>
+                  <div>
+                    <span> Number Of Replier : 1 </span>
+                    <hr/>
+                    <span> Replier Who Replied The Most : Chan Kok Kuan </span>
+                    <hr/>
+                  </div>
+                </div>
+                 <div className="clearfix"></div>
+               </div>
            </div>
        </form>
    </div>
@@ -109,4 +102,4 @@ class EmailConversation extends Component{
   }
 }
 
-export default EmailConversation;
+export default AdminEmailConversation;

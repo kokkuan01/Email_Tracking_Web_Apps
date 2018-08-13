@@ -3,7 +3,9 @@ import {BrowserRouter as Router,Route,Switch} from "react-router-dom";
 import LoginPage from "./LoginPage";
 import InboxPage from "./InboxPage";
 import EmailPage from "./EmailPage";
-import AddInfoPage from "./AddInfoPage";
+import AdminLoginPage from './AdminLoginPage';
+import AdminInboxPage from './AdminInboxPage';
+import AdminEmailPage from './AdminEmailPage';
 
 class App extends Component{
   render(){
@@ -13,7 +15,9 @@ class App extends Component{
           <Route exact path='/' component={LoginPage}/>
           <Route exact path='/inbox' component={InboxPage}/>
           <Route exact path='/inbox/:id' component={EmailPage}/>
-          <Route path='/inbox/:id/addInfo' component={AddInfoPage}/>
+          <Route exact path='/admin' component={AdminLoginPage}/>
+          <Route exact path='/admin/inbox' component={AdminInboxPage}/>
+          <Route exact path='/admin/inbox/:id' component={AdminEmailPage}/>
         </Switch>
       </Router>
     );

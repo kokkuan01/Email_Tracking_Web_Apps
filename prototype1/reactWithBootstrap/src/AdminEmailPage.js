@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import './EmailPage.css';
-import EmailConversation from './EmailConversation';
+import AdminEmailConversation from './AdminEmailConversation';
 
-class EmailPage extends Component{
+class AdminEmailPage extends Component{
   constructor(props){
     super(props);
     this.state={
@@ -21,13 +21,13 @@ class EmailPage extends Component{
   }
 
   render() {
-  let inbox = this.props.location.state.inbox;
+  let type = this.props.location.state.type;
     return (
       <div className="container">
         <div className="navbar navbar-fixed-top">
           <div className="navbar-inner">
             <div className="container-fluid">
-              <Link className="brand" to="/inbox">Befrienders</Link>
+              <a className="brand" href="#">Befrienders</a>
               <div className="btn-group pull-right">
                 <a className="btn dropdown-toggle" data-toggle="dropdown" href="#">
                   <i className="icon-user"></i> Chan Kok Kuan
@@ -45,12 +45,14 @@ class EmailPage extends Component{
           <div className="row">
             <div className="col-sm-3 col-md-2">
               <ul className="nav nav-pills nav-stacked">
-                  <li className={inbox==="unsend"||inbox===null?"active":''}><Link to={{pathname:"/inbox",search:"?inbox=unsend"}} onClick={this.onClick}>Inbox</Link></li>
-                  <li><Link to={{pathname:"/inbox",search:"?inbox=replying"}} onClick={this.onClick}>Replying</Link></li>
-                  <li className={inbox==="sent"?"active":''}><Link to={{pathname:"/inbox",search:"?inbox=sent"}} onClick={this.onClick}>Sent</Link></li>
+                  <li className={type==="unsend"||type===null?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=unsend"}} onClick={this.onClick}>Inbox</Link></li>
+                  <li><Link to={{pathname:"/admin/inbox",search:"?type=replying"}} onClick={this.onClick}>Replying</Link></li>
+                  <li className={type==="sent"?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=sent"}} onClick={this.onClick}>Sent</Link></li>
+                  <li><Link to={{pathname:"/admin/inbox",search:"?type=manage"}} onClick={this.onClick}>Manage Accounts</Link></li>
+                  <li><Link to={{pathname:"/admin/inbox",search:"?type=report"}} onClick={this.onClick}>View Report</Link></li>
               </ul>
             </div>
-            <EmailConversation inbox={inbox}/>
+            <AdminEmailConversation type={type}/>
           </div>
         </div>
       </div>
@@ -59,4 +61,4 @@ class EmailPage extends Component{
   }
 }
 
-export default EmailPage;
+export default AdminEmailPage;

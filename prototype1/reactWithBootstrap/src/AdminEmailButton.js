@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 
-class EmailButton extends Component{
+class AdminEmailButton extends Component{
   constructor(props){
     super(props);
     this.onClick = this.onClick.bind(this);
   }
 
   onClick(e){
-    if(this.props.inbox === 'replying'){
+    if(this.props.type === 'replying'){
       e.preventDefault();
       let div = document.getElementById('alert');
       div.style.display = "block";
@@ -16,10 +16,10 @@ class EmailButton extends Component{
   }
 
   render(){
-    let to = "/inbox/" + this.props.id;
+    let to = "/admin/inbox/" + this.props.id;
 
     return(
-      <Link to={{pathname:to,state:{inbox:this.props.inbox}}} className="list-group-item" onClick={this.onClick}>
+      <Link to={{pathname:to,state:{type:this.props.type}}} className="list-group-item" onClick={this.onClick}>
           <span className="name">{this.props.name}</span>
           <span>{this.props.title}</span>
           <span className="text-muted" style={{fontSize:11}}>- {this.props.firstLine}</span>
@@ -29,4 +29,4 @@ class EmailButton extends Component{
   }
 }
 
-export default EmailButton;
+export default AdminEmailButton;

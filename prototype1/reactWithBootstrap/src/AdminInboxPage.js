@@ -3,18 +3,18 @@ import './InboxPage.css';
 import ReactList from 'react-list';
 import {Link} from 'react-router-dom';
 import {unsend,replying,sent} from './sample';
-import EmailButton from './EmailButton';
+import AdminEmailButton from './AdminEmailButton';
 
 const queryString = require('query-string');
 
-class InboxPage extends Component{
+class AdminInboxPage extends Component{
   constructor(props){
     super(props);
 
     var parsed = queryString.parse(this.props.location.search);
 
     this.state={
-      inbox:parsed.inbox?parsed.inbox:null,
+      type:parsed.type?parsed.type:null,
       time:0,
       data:[]
     }
@@ -24,11 +24,11 @@ class InboxPage extends Component{
   }
 
   componentDidMount(){
-    let inbox = this.state.inbox;
-    if(inbox === null || inbox==="unsend"){
+    let type = this.state.type;
+    if(type === null || type==="unsend"){
       this.setState({data:unsend});
     }
-    else if(inbox === "replying"){
+    else if(type === "replying"){
       this.setState({data:replying});
     }
     else{
@@ -41,17 +41,17 @@ class InboxPage extends Component{
       var parsed = queryString.parse(this.props.location.search);
 
       this.setState({
-        inbox:parsed.inbox?parsed.inbox:null,
+        type:parsed.type?parsed.type:null,
         time:0
       },this.update);
     }
   }
 
   update(){
-    if(this.state.inbox === null || this.state.inbox==="unsend"){
+    if(this.state.type === null || this.state.type==="unsend"){
       this.setState({data:unsend},this.render);
     }
-    else if(this.state.inbox === "replying"){
+    else if(this.state.type === "replying"){
       this.setState({data:replying},this.render);
     }
     else{
@@ -72,10 +72,25 @@ class InboxPage extends Component{
     });
   }
 
+  displayContent(){
+    let type = this.state.type;
+    if(type === null || type === 'unsend' || type ==='sent' || type==='replying'){
+      return(
+        <div className="list-group" style={{overflow: 'auto',maxHeight:550}}>
+          <ReactList
+            itemRenderer={this.renderItem}
+            length={this.state.data.length}
+            type='uniform'
+          />
+        </div>
+      );
+    }
+  }
+
   renderItem(index, key){
     return(
-      <EmailButton key={key} id={index}
-      inbox={this.state.inbox}
+      <AdminEmailButton key={key} id={index}
+      type={this.state.type}
        name={this.state.data[index].sender}
        title={this.state.data[index].title}
        firstLine={this.state.data[index].firstLine}
@@ -90,7 +105,7 @@ class InboxPage extends Component{
         <div className="navbar navbar-fixed-top">
           <div className="navbar-inner">
             <div className="container-fluid">
-              <Link className="brand" to="/inbox">Befrienders</Link>
+              <Link className="brand" to="/admin/inbox">Befrienders</Link>
               <div className="btn-group pull-right">
                 <a className="btn dropdown-toggle" data-toggle="dropdown" href="#">
                   <i className="icon-user"></i> Chan Kok Kuan
@@ -126,21 +141,17 @@ class InboxPage extends Component{
           <div className="row">
             <div className="col-sm-3 col-md-2">
                 <ul className="nav nav-pills nav-stacked">
-                    <li className={this.state.inbox==="unsend"||this.state.inbox===null?"active":''}><Link to={{pathname:"/inbox",search:"?inbox=unsend"}} onClick={this.onClick}>Inbox</Link></li>
-                    <li className={this.state.inbox==="replying"?"active":''}><Link to={{pathname:"/inbox",search:"?inbox=replying"}} onClick={this.onClick}>Replying</Link></li>
-                    <li className={this.state.inbox==="sent"?"active":''}><Link to={{pathname:"/inbox",search:"?inbox=sent"}} onClick={this.onClick}>Sent</Link></li>
+                    <li className={this.state.type==="unsend"||this.state.type===null?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=unsend"}} onClick={this.onClick}>Inbox</Link></li>
+                    <li className={this.state.type==="replying"?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=replying"}} onClick={this.onClick}>Replying</Link></li>
+                    <li className={this.state.type==="sent"?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=sent"}} onClick={this.onClick}>Sent</Link></li>
+                    <li className={this.state.type==="manage"?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=manage"}} onClick={this.onClick}>Manage Accounts</Link></li>
+                    <li className={this.state.type==="report"?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=report"}} onClick={this.onClick}>View Report</Link></li>
                 </ul>
             </div>
             <div className="col-md-10">
               <div className="tab-content">
                 <div className="tab-pane fade in active" id="home">
-                  <div className="list-group" style={{overflow: 'auto',maxHeight:550}}>
-                    <ReactList
-                      itemRenderer={this.renderItem}
-                      length={this.state.data.length}
-                      type='uniform'
-                    />
-                  </div>
+                  {this.displayContent()}
                 </div>
               </div>
             </div>
@@ -155,4 +166,4 @@ class InboxPage extends Component{
   }
 }
 
-export default InboxPage;
+export default AdminInboxPage;
