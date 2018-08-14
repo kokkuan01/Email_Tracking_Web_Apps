@@ -24,4 +24,5 @@ time.</li>
   <li>react-router-dom => DOM binding on react-router</li>
   <li>react-list => infinite list</li>
   <li>react-sanfona => collapse item</li>
+  <li>chart.js => visualize data to chart</li>
 </ul>
