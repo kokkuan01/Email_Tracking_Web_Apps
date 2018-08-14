@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
 import './EmailPage.css';
 import EmailConversation from './EmailConversation';
 
@@ -7,7 +7,8 @@ class EmailPage extends Component{
   constructor(props){
     super(props);
     this.state={
-      submit:false
+      submit:false,
+      logout:false
     };
 
     this.logout = this.logout.bind(this);
@@ -21,9 +22,28 @@ class EmailPage extends Component{
   }
 
   render() {
-  let inbox = this.props.location.state.inbox;
+    let inbox = this.props.location.state.inbox;
+    if(this.state.logout){
+      return(<Redirect to="/"/>);
+    }
     return (
       <div className="container">
+        <div className="modal fade" id="logout" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div className="modal-dialog modal-dialog-centered" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLongTitle">Logout</h5>
+              </div>
+              <div className="modal-body">
+                Do You Sure To Logout?
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={()=>{this.setState({logout:true})}}>Logout</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className="navbar navbar-fixed-top">
           <div className="navbar-inner">
             <div className="container-fluid">
@@ -34,7 +54,7 @@ class EmailPage extends Component{
                   <span className="caret"></span>
                 </a>
                 <ul className="dropdown-menu">
-                  <li><Link to="/">Sign Out</Link></li>
+                  <li><a href="#" data-toggle="modal" data-target="#logout">Sign Out</a></li>
                 </ul>
               </div>
             </div>

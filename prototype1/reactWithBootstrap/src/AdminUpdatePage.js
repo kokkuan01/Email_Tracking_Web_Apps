@@ -2,18 +2,19 @@ import React, {Component} from 'react';
 import {Link,Redirect} from 'react-router-dom';
 import {account} from './sample';
 
-class AdminCreatePage extends Component{
+class AdminUpdatePage extends Component{
   constructor(props){
     super(props);
+    let index = this.props.location.state.index;
     this.state={
-        name:'',
-        username:'',
-        password:'',
-        type:'Volunteer',
+        index:this.props.location.state.index,
+        name:account[index].name,
+        username:account[index].username,
+        password:'123456',
+        type:account[index].type,
         redirect:false,
         logout:false
     }
-
     this.onSubmit = this.onSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
@@ -47,12 +48,12 @@ class AdminCreatePage extends Component{
     e.preventDefault();
     this.setState({redirect:true});
     let obj = {
-      date:'17/08/2018',
+      date:account[this.state.index].date,
       name:this.state.name,
       username:this.state.username,
       type:this.state.type
     };
-    account.push(obj);
+    account[this.state.index] = obj;
   }
 
   render(){
@@ -115,25 +116,25 @@ class AdminCreatePage extends Component{
           <div className="col-md-10 maxHeight">
             <div className="tab-content maxHeight">
               <div className="tab-pane fade in active" id="home">
-                <h3 className='lead no-margin'>Create New Accounts</h3>
+                <h3 className='lead no-margin'>Update Accounts</h3>
                 <form method="post" onSubmit={this.onSubmit}>
                   <div className="form-group">
                     <label>Name : </label>
-                    <input type='text' name='name' className="form-control" onChange={this.handleChange}/>
+                    <input type='text' name='name' className="form-control" value={this.state.name} onChange={this.handleChange}/>
                   </div>
                   <div className="form-group">
                     <label>Username : </label>
-                    <input type='text' name='username' className="form-control" onChange={this.handleChange}/>
+                    <input type='text' name='username' className="form-control" value={this.state.username} onChange={this.handleChange}/>
                   </div>
                   <div className="form-group">
                     <label>Password : </label>
-                    <input type='password' name='password' className="form-control" onChange={this.handleChange}/>
+                    <input type='password' name='password' className="form-control" value={this.state.password} onChange={this.handleChange}/>
                   </div>
                   <div>
                     <label>Type : </label>
                     <select className="form-control" name="type" onChange={this.handleChange}>
-                      <option value="Volunteer">Volunteer</option>
-                      <option value="Administrator">Administrator</option>
+                      <option value="Volunteer" selected={this.state.type==='Volunteer'}>Volunteer</option>
+                      <option value="Administrator" selected={this.state.type==='Administrator'}>Administrator</option>
                     </select>
                   </div>
                   <br/>
@@ -157,4 +158,4 @@ class AdminCreatePage extends Component{
   }
 }
 
-export default AdminCreatePage;
+export default AdminUpdatePage;

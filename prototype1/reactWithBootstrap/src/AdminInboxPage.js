@@ -1,9 +1,10 @@
 import React,{Component} from 'react';
 import './InboxPage.css';
 import ReactList from 'react-list';
-import {Link} from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
 import {unsend,replying,sent,account} from './sample';
 import AdminEmailButton from './AdminEmailButton';
+import AdminChart from './AdminChart';
 
 const queryString = require('query-string');
 
@@ -16,11 +17,17 @@ class AdminInboxPage extends Component{
     this.state={
       type:parsed.type?parsed.type:null,
       time:0,
-      data:[]
+      data:[],
+      delete:-1,
+      logout:false,
+      update:-1,
     }
 
     this.renderItem = this.renderItem.bind(this);
     this.onClick = this.onClick.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
+    this.renderTableItem = this.renderTableItem.bind(this);
+    this.renderTable = this.renderTable.bind(this);
   }
 
   componentDidMount(){
@@ -47,6 +54,11 @@ class AdminInboxPage extends Component{
     }
   }
 
+  deleteItem(index){
+    account.splice(this.state.delete,1);
+    this.setState({delete:-1});
+  }
+
   update(){
     if(this.state.type === null || this.state.type==="unsend"){
       this.setState({data:unsend},this.render);
@@ -56,13 +68,6 @@ class AdminInboxPage extends Component{
     }
     else{
       this.setState({data:sent},this.render);
-    }
-  }
-
-  logout(event){
-    var choice = window.confirm("Are you sure to log out?");
-    if(!choice){
-      event.preventDefault();
     }
   }
 
@@ -112,7 +117,6 @@ class AdminInboxPage extends Component{
       );
     }
     else if(type==='manage'){
-      console.log(account)
       return(
         <ReactList
           itemsRenderer={(items,ref)=>this.renderTable(items,ref)}
@@ -120,6 +124,12 @@ class AdminInboxPage extends Component{
           length={account.length}
           type='uniform'
         />
+      );
+    }
+    else if(type==='report'){
+
+      return(
+        <AdminChart/>
       );
     }
   }
@@ -191,10 +201,10 @@ class AdminInboxPage extends Component{
           {account[index].type}
         </td>
         <td>
-          <button style={{marginRight:7}} className="btn">
+          <button style={{marginRight:7}} className="btn" onClick={()=>this.setState({update:index})}>
             Update
           </button>
-          <button className="btn btn-danger">
+          <button type="button" className="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onClick={()=>{this.setState({delete:index})}}>
             Delete
           </button>
         </td>
@@ -215,8 +225,49 @@ class AdminInboxPage extends Component{
   }
 
   render() {
+    if(this.state.logout){
+      return(<Redirect to="/admin"/>);
+    }
+
+    if(this.state.update != -1){
+      let link = "/admin/inbox/account/update/" + this.state.update;
+      return(<Redirect to={{pathname:link,state:{index:this.state.update}}}/>);
+    }
+
     return (
       <div className="container">
+      <div className="modal fade" id="logout" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLongTitle">Logout</h5>
+            </div>
+            <div className="modal-body">
+              Do You Sure To Logout?
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+              <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={()=>{this.setState({logout:true})}}>Logout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="modal fade" id="deleteModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLongTitle">Delete Confirmation</h5>
+            </div>
+            <div className="modal-body">
+              Do You Sure To Delete?
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
+              <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={this.deleteItem}>Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
         <div className="navbar navbar-fixed-top">
           <div className="navbar-inner">
             <div className="container-fluid">
@@ -227,7 +278,7 @@ class AdminInboxPage extends Component{
                   <span className="caret"></span>
                 </a>
                 <ul className="dropdown-menu">
-                  <li><Link to="/">Sign Out</Link></li>
+                  <li><a href="#" data-toggle="modal" data-target="#logout">Sign Out</a></li>
                 </ul>
               </div>
             </div>
@@ -243,7 +294,7 @@ class AdminInboxPage extends Component{
                     <li className={this.state.type==="replying"?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=replying"}} onClick={this.onClick}>Replying</Link></li>
                     <li className={this.state.type==="sent"?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=sent"}} onClick={this.onClick}>Sent</Link></li>
                     <li className={this.state.type==="manage"?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=manage"}} onClick={this.onClick}>Manage Accounts</Link></li>
-                    <li className={this.state.type==="report"?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=report"}} onClick={this.onClick}>View Report</Link></li>
+                    <li className={this.state.type==="report"?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=report"}} name="report" onClick={this.onClick}>View Report</Link></li>
                 </ul>
             </div>
             <div className="col-md-10 maxHeight">
@@ -259,6 +310,7 @@ class AdminInboxPage extends Component{
           <a href="#" className="close" data-dismiss="alert" aria-label="close">&times;</a>
           <strong>Cannot Open Email That Is Being Replied</strong>
         </div>
+
       </div>
     );
   }

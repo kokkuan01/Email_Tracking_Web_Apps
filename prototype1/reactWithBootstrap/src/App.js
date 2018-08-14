@@ -7,6 +7,7 @@ import AdminLoginPage from './AdminLoginPage';
 import AdminInboxPage from './AdminInboxPage';
 import AdminEmailPage from './AdminEmailPage';
 import AdminCreatePage from './AdminCreatePage';
+import AdminUpdatePage from './AdminUpdatePage';
 
 class App extends Component{
   render(){
@@ -20,6 +21,7 @@ class App extends Component{
           <Route exact path='/admin/inbox' component={AdminInboxPage}/>
           <Route exact path='/admin/inbox/:id' component={AdminEmailPage}/>
           <Route exact path='/admin/inbox/account/create' component={AdminCreatePage}/>
+          <Route exact path='/admin/inbox/account/update/:id' component={AdminUpdatePage}/>
         </Switch>
       </Router>
     );
