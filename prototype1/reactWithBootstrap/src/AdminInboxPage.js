@@ -2,7 +2,7 @@ import React,{Component} from 'react';
 import './InboxPage.css';
 import ReactList from 'react-list';
 import {Link} from 'react-router-dom';
-import {unsend,replying,sent} from './sample';
+import {unsend,replying,sent,account} from './sample';
 import AdminEmailButton from './AdminEmailButton';
 
 const queryString = require('query-string');
@@ -72,6 +72,32 @@ class AdminInboxPage extends Component{
     });
   }
 
+  displayPageButton(){
+    let type = this.state.type;
+    if(type === null || type === 'unsend' || type ==='sent' || type==='replying'){
+      return(
+        <div className="row">
+            <div className="col-sm-9 col-md-10">
+                <button type="button" className="btn btn-default" data-toggle="tooltip" title="Refresh">
+                  <span className="glyphicon glyphicon-refresh"></span> 
+                </button>
+                <div className="pull-right">
+                  <span className="text-muted"><b>1</b>–<b>5</b> of <b>5</b></span>
+                  <div className="btn-group btn-group-sm">
+                      <button type="button" className="btn btn-default">
+                          <span className="glyphicon glyphicon-chevron-left"></span>
+                      </button>
+                      <button type="button" className="btn btn-default">
+                          <span className="glyphicon glyphicon-chevron-right"></span>
+                      </button>
+                  </div>
+                </div>
+            </div>
+        </div>
+      );
+    }
+  }
+
   displayContent(){
     let type = this.state.type;
     if(type === null || type === 'unsend' || type ==='sent' || type==='replying'){
@@ -85,6 +111,95 @@ class AdminInboxPage extends Component{
         </div>
       );
     }
+    else if(type==='manage'){
+      console.log(account)
+      return(
+        <ReactList
+          itemsRenderer={(items,ref)=>this.renderTable(items,ref)}
+          itemRenderer={this.renderTableItem}
+          length={account.length}
+          type='uniform'
+        />
+      );
+    }
+  }
+
+  renderTable(items,ref){
+    return(
+      <div className="container-fluid">
+        <div className="row">
+          <div className="col-md-12">
+            <h3>
+                Account Management
+            </h3>
+            <Link to="/admin/inbox/account/create" className="btn btn-success">
+              Create New Account
+            </Link>
+            <table className="table table-hover">
+              <caption>List of users</caption>
+              <thead className="thead-light">
+                <tr>
+                  <th>
+                    #
+                  </th>
+                  <th>
+                    Creation Date
+                  </th>
+                  <th>
+                    Name
+                  </th>
+                  <th>
+                    Username
+                  </th>
+                  <th>
+                    Type of User
+                  </th>
+                  <th>
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody ref={ref}>
+                {items}
+              </tbody>
+            </table>
+            <div className="row">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderTableItem(index,key){
+    return(
+      <tr key={key}>
+        <td>
+          {index+1}
+        </td>
+        <td>
+          {account[index].date}
+        </td>
+        <td>
+          {account[index].name}
+        </td>
+        <td>
+          {account[index].username}
+        </td>
+        <td>
+          {account[index].type}
+        </td>
+        <td>
+          <button style={{marginRight:7}} className="btn">
+            Update
+          </button>
+          <button className="btn btn-danger">
+            Delete
+          </button>
+        </td>
+      </tr>
+    );
   }
 
   renderItem(index, key){
@@ -119,26 +234,9 @@ class AdminInboxPage extends Component{
           </div>
         </div>
         <div className="content">
-          <div className="row">
-              <div className="col-sm-9 col-md-10">
-                  <button type="button" className="btn btn-default" data-toggle="tooltip" title="Refresh">
-                    <span className="glyphicon glyphicon-refresh"></span> 
-                  </button>
-                  <div className="pull-right">
-                    <span className="text-muted"><b>1</b>–<b>5</b> of <b>5</b></span>
-                    <div className="btn-group btn-group-sm">
-                        <button type="button" className="btn btn-default">
-                            <span className="glyphicon glyphicon-chevron-left"></span>
-                        </button>
-                        <button type="button" className="btn btn-default">
-                            <span className="glyphicon glyphicon-chevron-right"></span>
-                        </button>
-                    </div>
-                  </div>
-              </div>
-          </div>
+          {this.displayPageButton()}
           <hr />
-          <div className="row">
+          <div className="row maxHeight">
             <div className="col-sm-3 col-md-2">
                 <ul className="nav nav-pills nav-stacked">
                     <li className={this.state.type==="unsend"||this.state.type===null?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=unsend"}} onClick={this.onClick}>Inbox</Link></li>
@@ -148,8 +246,8 @@ class AdminInboxPage extends Component{
                     <li className={this.state.type==="report"?"active":''}><Link to={{pathname:"/admin/inbox",search:"?type=report"}} onClick={this.onClick}>View Report</Link></li>
                 </ul>
             </div>
-            <div className="col-md-10">
-              <div className="tab-content">
+            <div className="col-md-10 maxHeight">
+              <div className="tab-content maxHeight">
                 <div className="tab-pane fade in active" id="home">
                   {this.displayContent()}
                 </div>

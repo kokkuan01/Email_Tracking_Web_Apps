@@ -95,6 +95,39 @@ export var sent = [
   }
 ];
 
+export var account=[
+  {
+    date:'03/12/2012',
+    name:"Chan Kok Kuan",
+    username:"kokkuan01",
+    type:"Administrator"
+  },
+  {
+    date:'03/05/2013',
+    name:"Volunteer 1",
+    username:"volunteer1",
+    type:"Volunteer"
+  },
+  {
+    date:'03/08/2014',
+    name:"Administrator 2",
+    username:"admin2",
+    type:"Administrator"
+  },
+  {
+    date:'05/10/2015',
+    name:"Volunteer 2",
+    username:"kokkuan",
+    type:"Volunteer"
+  },
+  {
+    date:'03/12/2012',
+    name:"Volunteer 3",
+    username:"kokkuan",
+    type:"Volunteer"
+  },
+]
+
 export var emailExample=[
   {
     senderEmail:"limleetan@gmail.com",
