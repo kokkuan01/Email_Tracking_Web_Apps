@@ -1,4 +1,4 @@
-# Email_Tracking_Web_Apps
+﻿# Email_Tracking_Web_Apps
 Software Engineering Degree Final Year Project<br/>
 
 # Requirement
@@ -22,7 +22,5 @@ time.</li>
   <li>create-react-app => To create React application</li>
   <li>react-router => To enable routing in React application</li>
   <li>react-router-dom => DOM binding on react-router</li>
-  <li>react-list => infinite list</li>
-  <li>react-sanfona => collapse item</li>
   <li>chart.js => visualize data to chart</li>
 </ul>
