@@ -18,9 +18,15 @@ time.</li>
  </ul>
 
 # Libraries and Modules Used
+ReactJS
 <ul>
   <li>create-react-app => To create React application</li>
   <li>react-router => To enable routing in React application</li>
   <li>react-router-dom => DOM binding on react-router</li>
   <li>chart.js => visualize data to chart</li>
+</ul>
+
+Laravel
+<ul>
+  <li>spatie/laravel-cors => To enable cors</li>
 </ul>
