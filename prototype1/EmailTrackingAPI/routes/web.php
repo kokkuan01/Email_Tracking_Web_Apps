@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/testing','TestController@index');
+
+Route::get('/oauth2callback.php','TestController@index');

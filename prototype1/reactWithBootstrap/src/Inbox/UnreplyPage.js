@@ -57,7 +57,7 @@ export default class UnreplyPage extends Component{
                 <div className="tab-pane fade in active" id="home">
                   <div className="list-group" style={{overflow: 'auto',maxHeight:550}}>
                       {this.state.data.map((item,index)=>{
-                        return(<EmailButton id={index} item={item}/>);
+                        return(<EmailButton id={index} item={item} type="unreply"/>);
                       })}
                   </div>
                 </div>

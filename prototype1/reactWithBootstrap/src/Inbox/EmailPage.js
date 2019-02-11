@@ -22,7 +22,7 @@ export default class EmailPage extends Component{
   }
 
   render() {
-    let isAdmin = true;
+    let isAdmin = false;
 
     if(this.state.logout){
       return(<Redirect to="/"/>);

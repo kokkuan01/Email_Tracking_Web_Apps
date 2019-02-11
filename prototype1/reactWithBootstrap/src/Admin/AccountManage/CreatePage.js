@@ -111,10 +111,6 @@ export default class AdminCreatePage extends Component{
                 </div>
             </div>
         </div>
-        <div style={{display:'none'}} id = "alert" className="navbar-fixed-top alert alert-danger">
-            <a href="#" className="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Cannot Open Email That Is Being Replied</strong>
-        </div>
     </div>
     );
   }
