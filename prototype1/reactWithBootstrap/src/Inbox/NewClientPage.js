@@ -1,63 +1,86 @@
 import React, {Component} from 'react';
-import {Link,Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import '../css/EmailPage.css';
 import Header from '../Common/Header';
 import NavigationBar from '../Common/NavigationBar';
+
+const config = require('../config');
 
 export default class NewClientPage extends Component{
     constructor(props){
       super(props);
       this.state={
           name:'',
-          username:'',
-          password:'',
-          redirect:false,
-          logout:false
-      }
+          age:'',
+          race:0,
+          nationality:0,
+          job:'',
+          to:null
+      };
   
       this.onSubmit = this.onSubmit.bind(this);
       this.handleChange = this.handleChange.bind(this);
     }
   
     handleChange(event){
-      console.log(event.target.name);
       if(event.target.name === 'name'){
         this.setState({
           name:event.target.value
         });
       }
-      else if (event.target.name === 'username') {
+      else if (event.target.name === 'age') {
         this.setState({
-          username:event.target.value
+          age:event.target.value
         });
       }
-      else if (event.target.name === 'password') {
+      else if (event.target.name === 'race') {
         this.setState({
-          password:event.target.value
+          race:event.target.value
         });
       }
-      else if (event.target.name === 'type') {
-        console.log(event.target.value);
+      else if (event.target.name === 'nationality') {
         this.setState({
-          type:event.target.value
+          nationality:event.target.value
+        },this.render);
+      }
+      else if (event.target.name === 'job') {
+        this.setState({
+          job:event.target.value
         },this.render);
       }
     }
   
     onSubmit(e){
       e.preventDefault();
-      this.setState({redirect:true});
+
+      let url = config.settings.serverPath + "/api/addClientInfo/" + this.props.location.state.clientId;
+      fetch(url,{
+        method:"POST",
+        headers:{
+          Accept:'application/json',
+          'Content-type':'application/json'
+        },
+        body:JSON.stringify({
+          name:this.state.name,
+          age:this.state.age,
+          race:this.state.race,
+          nationality:this.state.nationality,
+          job:this.state.job
+        })
+      }).then(response=>{
+        if(response.status === 200){
+          this.setState({
+            to:'/inbox/' + this.props.location.state.threadId
+          });
+        }
+      })
     }
   
     render(){
-      if(this.state.redirect){
+      if(this.state.to !== null){
         return(
-          <Redirect to={{pathname:"/inbox/" + this.props.location.state.id}}/>
+          <Redirect to={{pathname:this.state.to,state:{threadId:this.props.location.state.threadId}}}/>
         );
-      }
-  
-      if(this.state.logout){
-        return(<Redirect to="/"/>);
       }
   
       return(
@@ -77,19 +100,28 @@ export default class NewClientPage extends Component{
                                       <input type='text' name='name' className="form-control" onChange={this.handleChange}/>
                                   </div>
                                   <div className="form-group">
-                                      <label>column 2 : </label>
-                                      <input type='text' name='username' className="form-control" onChange={this.handleChange}/>
+                                      <label>Age : </label>
+                                      <input type='number' name='age' className="form-control" onChange={this.handleChange}/>
                                   </div>
                                   <div className="form-group">
-                                      <label>column 3 : </label>
-                                      <input type='password' name='password' className="form-control" onChange={this.handleChange}/>
+                                      <label>Race : </label>
+                                      <select className="form-control" name="race" onChange={this.handleChange}>
+                                        <option value="0">Melayu</option>
+                                        <option value="1">Chinese</option>
+                                        <option value="2">Indian</option>
+                                        <option value="3">Others</option>
+                                      </select>
                                   </div>
                                   <div>
-                                      <label>column 4 : </label>
-                                      <select className="form-control" name="type" onChange={this.handleChange}>
-                                      <option value="Volunteer">Volunteer</option>
-                                      <option value="Administrator">Administrator</option>
+                                      <label>Nationality : </label>
+                                      <select className="form-control" name="nationality" onChange={this.handleChange}>
+                                        <option value="0">Malaysian</option>
+                                        <option value="1">Non-Malaysian</option>
                                       </select>
+                                  </div>
+                                  <div className="form-group">
+                                      <label>Job : </label>
+                                      <input type='text' name='job' className="form-control" onChange={this.handleChange}/>
                                   </div>
                                   <br/>
                                   <div>

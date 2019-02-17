@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import '../css/InboxPage.css';
 import {Redirect} from 'react-router-dom';
-import {unsend,replying,sent} from '../previousWork/sample';
+import {unsend} from '../previousWork/sample';
 import Header from '../Common/Header';
 import NavigationBar from '../Common/NavigationBar';
 import AdminChart from './AdminChart';

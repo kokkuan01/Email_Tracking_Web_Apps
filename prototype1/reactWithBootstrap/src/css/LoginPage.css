@@ -30,7 +30,7 @@
   margin-bottom: 10px;
 }
 
-input[type="text"],input[type="password"]{
+input[type="text"],input[type="password"],input[type="email"],input[type="number"]{
   background-color: #fff;
   border: 1px solid #E1EAF0;
   padding: 20px 15px;
@@ -51,7 +51,7 @@ input[type="text"],input[type="password"]{
   transition: all 0.1s linear;
 }
 
-.ErrorMesage{
+.ErrorMessage{
   color:red;
   margin-bottom:10px;
   font-weight: 600;

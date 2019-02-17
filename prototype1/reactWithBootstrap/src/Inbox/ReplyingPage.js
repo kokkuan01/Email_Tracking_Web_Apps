@@ -1,22 +1,36 @@
 import React,{Component} from 'react';
 import '../css/InboxPage.css';
 import {Redirect} from 'react-router-dom';
-import {unsend,replying,sent} from '../previousWork/sample';
 import EmailButton from './EmailButton';
 import Header from '../Common/Header';
 import NavigationBar from '../Common/NavigationBar';
+
+const config = require('../config');
 
 export default class InboxPage extends Component{
   constructor(props){
     super(props);
 
     this.state={
-      data:unsend,
+      data:null,
       logout:false,
     }
 
     this.logout = this.logout.bind(this);
     this.displayError = this.displayError.bind(this);
+  }
+
+  componentDidMount(){
+    let url = config.settings.serverPath + "/api/inbox?type=replying";
+    fetch(url)
+    .then(response=>{
+      return response.json();
+    })
+    .then(result=>{
+      this.setState({
+        data:result.items
+      },this.render);
+    });
   }
 
   logout(event){
@@ -29,8 +43,12 @@ export default class InboxPage extends Component{
   }
 
   render() {
-    if(this.state.logout){
-      return(<Redirect to="/"/>);
+    let EmailButtons = <div></div>
+
+    if(this.state.data !== null){
+      EmailButtons = this.state.data.map((item,index)=>{
+        return(<EmailButton id={index} item={item} type="replying"/>);
+      })
     }
 
     return (
@@ -62,9 +80,7 @@ export default class InboxPage extends Component{
               <div className="tab-content">
                 <div className="tab-pane fade in active" id="home">
                   <div className="list-group" style={{overflow: 'auto',maxHeight:550}}>
-                      {this.state.data.map((item,index)=>{
-                        return(<EmailButton id={index} item={item} error={this.displayError}/>);
-                      })}
+                      {EmailButtons}
                   </div>
                 </div>
               </div>

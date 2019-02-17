@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Link,Redirect} from 'react-router-dom';
+import {Redirect} from 'react-router-dom';
 import '../css/EmailPage.css';
 import EmailConversation from './EmailConversation';
 import AdminEmailConversation from '../Admin/AdminEmailConversation'
@@ -11,14 +11,7 @@ export default class EmailPage extends Component{
     super(props);
     this.state={
       submit:false,
-      logout:false
     };
-
-    this.logout = this.logout.bind(this);
-  }
-
-  logout(event){
-    this.setState({logout:true});
   }
 
   render() {

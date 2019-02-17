@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRefreshTable extends Migration
+class CreateReviewTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class CreateRefreshTable extends Migration
      */
     public function up()
     {
-        Schema::create('refresh_token', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('token');
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedInteger('reply_id');
+            $table->foreign('reply_id')->references('id')->on('replies');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ class CreateRefreshTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('refresh_token');
+        Schema::dropIfExists('reviews');
     }
 }

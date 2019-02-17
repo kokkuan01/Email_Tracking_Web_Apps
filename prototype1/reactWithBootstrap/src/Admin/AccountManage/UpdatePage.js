@@ -1,22 +1,21 @@
 import React, {Component} from 'react';
-import {Link,Redirect} from 'react-router-dom';
-import {account} from '../../previousWork/sample';
+import {Link} from 'react-router-dom';
 import Header from '../../Common/Header';
 import NavigationBar from '../../Common/NavigationBar';
+
+const config = require('../../config');
 
 export default class AdminUpdatePage extends Component{
   constructor(props){
     super(props);
-    let index = this.props.location.state.index;
-    console.log(index);
+
+    let user = this.props.location.state.user;
     this.state={
-        index:this.props.location.state.index,
-        name:account[index].name,
-        username:account[index].username,
-        password:'123456',
-        type:account[index].type,
-        redirect:false,
-        logout:false
+      id:user.id,
+      name:user.name,
+      email:user.email,
+      role:user.role,
+      status:null,
     }
     this.onSubmit = this.onSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -28,9 +27,9 @@ export default class AdminUpdatePage extends Component{
         name:event.target.value
       });
     }
-    else if (event.target.name === 'username') {
+    else if (event.target.name === 'email') {
       this.setState({
-        username:event.target.value
+        email:event.target.value
       });
     }
     else if (event.target.name === 'password') {
@@ -38,35 +37,40 @@ export default class AdminUpdatePage extends Component{
         password:event.target.value
       });
     }
-    else if (event.target.name === 'type') {
+    else if (event.target.name === 'role') {
       console.log(event.target.value);
       this.setState({
-        type:event.target.value
+        role:event.target.value
       },this.render);
     }
   }
 
   onSubmit(e){
     e.preventDefault();
-    this.setState({redirect:true});
-    let obj = {
-      date:account[this.state.index].date,
-      name:this.state.name,
-      username:this.state.username,
-      type:this.state.type
-    };
-    account[this.state.index] = obj;
+    let url = config.settings.serverPath + "/api/users/" + this.state.id;
+    fetch(url,{
+      method:"PUT",
+      headers:{
+        Accept:'application/json',
+        'Content-type':'application/json'
+      },
+      body:JSON.stringify({
+        name:this.state.name,
+        role:this.state.role
+      })
+    }).then(response=>{
+      this.setState({
+        status:response.status
+      });
+    });
   }
 
   render(){
-    if(this.state.redirect){
-      return(
-        <Redirect to={{pathname:"/inbox/account"}}/>
-      );
-    }
-
-    if(this.state.logout){
-      return(<Redirect to="/"/>);
+    let successMessage = "none";
+    if(this.state.status !== null){
+      if(this.state.status === 204){
+        successMessage = "block";
+      }
     }
 
     return(
@@ -76,28 +80,39 @@ export default class AdminUpdatePage extends Component{
         <hr />
         <div className="row maxHeight">
           <NavigationBar type="manage"/>
+          <div className="modal" id="successMessage" tabIndex="-1" role="dialog" style={{display:successMessage,overflowX:"hidden",boxShadow:"0 0 0 5000px rgba(0, 0, 0, 0.75)"}}>
+              <div className="modal-dialog modal-dialog-centered" role="document">
+                  <div className="modal-content">
+                      <div className="modal-header">
+                          <h5 className="modal-title">Success</h5>
+                      </div>
+                      <div className="modal-body">
+                          Update Successfully
+                      </div>
+                      <div className="modal-footer">
+                      <Link style={{color:'white',textDecoration:'none'}} to={{pathname:"/inbox/account"}}><button type="button" className="btn btn-primary">Done</button></Link>
+                      </div>
+                  </div>
+              </div>
+          </div>
           <div className="col-md-10 maxHeight">
             <div className="tab-content maxHeight">
               <div className="tab-pane fade in active" id="home">
                 <h3 className='lead no-margin'>Update Accounts</h3>
                 <form method="post" onSubmit={this.onSubmit}>
+                   <div className="form-group">
+                    <label>Email : </label>
+                    <input type='text' name='email' className="form-control" value={this.state.email} onChange={this.handleChange} readOnly/>
+                  </div>
                   <div className="form-group">
                     <label>Name : </label>
                     <input type='text' name='name' className="form-control" value={this.state.name} onChange={this.handleChange}/>
                   </div>
-                  <div className="form-group">
-                    <label>Username : </label>
-                    <input type='text' name='username' className="form-control" value={this.state.username} onChange={this.handleChange}/>
-                  </div>
-                  <div className="form-group">
-                    <label>Password : </label>
-                    <input type='password' name='password' className="form-control" value={this.state.password} onChange={this.handleChange}/>
-                  </div>
                   <div>
                     <label>Type : </label>
-                    <select className="form-control" name="type" onChange={this.handleChange}>
-                      <option value="Volunteer" selected={this.state.type==='Volunteer'}>Volunteer</option>
-                      <option value="Administrator" selected={this.state.type==='Administrator'}>Administrator</option>
+                    <select className="form-control" name="role" onChange={this.handleChange}>
+                      <option value="1" selected={this.state.role==='1'}>Volunteer</option>
+                      <option value="2" selected={this.state.role==='2'}>Administrator</option>
                     </select>
                   </div>
                   <br/>

@@ -1,11 +1,33 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, Redirect} from 'react-router-dom';
+import Cookies from 'universal-cookie';
+
+const cookies = new Cookies();
 
 export default class Header extends Component{
+    constructor(props){
+        super(props);
+    
+        this.state={
+          logout:false,
+        }
+    
+        this.logout = this.logout.bind(this);
+      }
+
+    logout(event){
+    this.setState({logout:true});
+    }
+
     render(){
+        if(this.state.logout){
+            return(<Redirect to="/"/>);
+        }
+
+        let username = cookies.get("username");
         return(
             <div>
-                <div className="modal fade" id="logout" tabIndex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div className="modal fade" id="logout" tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -16,7 +38,7 @@ export default class Header extends Component{
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={this.props.logout}>Logout</button>
+                                <button type="button" className="btn btn-danger" data-dismiss="modal" onClick={this.logout}>Logout</button>
                             </div>
                         </div>
                     </div>
@@ -27,7 +49,7 @@ export default class Header extends Component{
                             <Link className="brand" to="/inbox">Befrienders</Link>
                             <div className="btn-group pull-right">
                                 <a className="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                    <i className="icon-user"></i> Chan Kok Kuan
+                                    <i className="icon-user"></i> {username + " "} 
                                     <span className="caret"></span>
                                 </a>
                                 <ul className="dropdown-menu">

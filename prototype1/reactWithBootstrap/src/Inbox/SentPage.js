@@ -1,21 +1,35 @@
 import React,{Component} from 'react';
 import '../css/InboxPage.css';
 import {Redirect} from 'react-router-dom';
-import {unsend,replying,sent} from '../previousWork/sample';
 import EmailButton from './EmailButton';
 import Header from '../Common/Header';
 import NavigationBar from '../Common/NavigationBar';
+
+const config = require('../config');
 
 export default class SentPage extends Component{
   constructor(props){
     super(props);
 
     this.state={
-      data:unsend,
+      data:null,
       logout:false,
     }
 
     this.logout = this.logout.bind(this);
+  }
+
+  componentDidMount(){
+    let url = config.settings.serverPath + "/api/inbox?type=sent";
+    fetch(url)
+    .then(response=>{
+      return response.json();
+    })
+    .then(result=>{
+      this.setState({
+        data:result.items
+      },this.render);
+    });
   }
 
   logout(event){
@@ -25,6 +39,14 @@ export default class SentPage extends Component{
   render() {
     if(this.state.logout){
       return(<Redirect to="/"/>);
+    }
+
+    let EmailButtons = <div></div>
+
+    if(this.state.data !== null){
+      EmailButtons = this.state.data.map((item,index)=>{
+        return(<EmailButton id={index} item={item} type="sent"/>);
+      })
     }
 
     return (
@@ -56,9 +78,7 @@ export default class SentPage extends Component{
               <div className="tab-content">
                 <div className="tab-pane fade in active" id="home">
                   <div className="list-group" style={{overflow: 'auto',maxHeight:550}}>
-                      {this.state.data.map((item,index)=>{
-                        return(<EmailButton id={index} item={item}/>);
-                      })}
+                      {EmailButtons}
                   </div>
                 </div>
               </div>

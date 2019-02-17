@@ -11,10 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/testing','FetchGmailController@index');
 
-Route::get('/testing','TestController@index');
+Route::get('/oauth2callback.php','FetchGmailController@index');
 
-Route::get('/oauth2callback.php','TestController@index');
+Route::get('/retrieve','FetchGmailController@handle');

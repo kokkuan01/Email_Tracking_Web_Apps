@@ -1,35 +1,80 @@
 import React,{Component} from 'react';
 import '../css/InboxPage.css';
 import {Redirect} from 'react-router-dom';
-import {unsend,replying,sent} from '../previousWork/sample';
 import EmailButton from './EmailButton';
 import Header from '../Common/Header';
 import NavigationBar from '../Common/NavigationBar';
+
+const config = require('../config');
 
 export default class UnreplyPage extends Component{
   constructor(props){
     super(props);
 
     this.state={
-      data:unsend,
-      logout:false,
+      data:null,
+      to:null,
+      clientId:-1,
+      threadId:-1
     }
-
-    this.logout = this.logout.bind(this);
+    
+    this.redirect = this.redirect.bind(this);
   }
 
-  logout(event){
-    this.setState({logout:true});
+  componentDidMount(){
+    let url = config.settings.serverPath + "/api/inbox?type=unreply";
+    fetch(url)
+    .then(response=>{
+      return response.json();
+    })
+    .then(result=>{
+      this.setState({
+        data:result.items
+      },this.render);
+    });
+  }
+
+  redirect(id){
+    let url = config.settings.serverPath + "/api/checkClient/" + id;
+    fetch(url)
+    .then(response=>{
+      return response.json();
+    })
+    .then(result=>{
+      if(result.fill === "required"){
+        this.setState({
+          to:"/inbox/createclient/" + result.id,
+          threadId:id,
+          clientId:result.id
+        },this.render);
+      }
+      else{
+        this.setState({
+          to:"/inbox/" + id,
+          threadId:id
+        },this.render);
+      }
+    });
   }
 
   render() {
-    if(this.state.logout){
-      return(<Redirect to="/"/>);
+    let EmailButtons = <div></div>
+
+    if(this.state.data !== null){
+      EmailButtons = this.state.data.map((item,index)=>{
+        return(<EmailButton item={item} type="unreply" redirect={this.redirect}/>);
+      })
+    }
+
+    if(this.state.to !== null){
+      return(
+        <Redirect to={{pathname:this.state.to,state:{clientId:this.state.clientId,threadId:this.state.threadId}}}/>
+      );
     }
 
     return (
       <div className="container">
-        <Header logout={this.logout}/>
+        <Header/>
         <div className="content">
           <div className="row">
               <div className="col-sm-9 col-md-10">
@@ -56,9 +101,7 @@ export default class UnreplyPage extends Component{
               <div className="tab-content">
                 <div className="tab-pane fade in active" id="home">
                   <div className="list-group" style={{overflow: 'auto',maxHeight:550}}>
-                      {this.state.data.map((item,index)=>{
-                        return(<EmailButton id={index} item={item} type="unreply"/>);
-                      })}
+                      {EmailButtons}
                   </div>
                 </div>
               </div>

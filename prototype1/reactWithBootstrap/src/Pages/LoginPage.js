@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import '../css/LoginPage.css';
 import {Redirect} from 'react-router';
+import Cookies from 'universal-cookie';
+
+const config = require('../config');
+const cookies = new Cookies();
 
 export default class LoginPage extends Component {
 
@@ -8,20 +12,20 @@ export default class LoginPage extends Component {
     super(props);
 
     this.state={
-      username:'',
+      email:'',
       password:'',
-      isLogin:false,
-      error:false
-    }
+      username:'',
+      status:null
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.submit = this.submit.bind(this);
   }
 
   handleChange(event){
-    if(event.target.name === 'username'){
+    if(event.target.name === 'email'){
       this.setState({
-        username:event.target.value
+        email:event.target.value
       });
     }
     else if (event.target.name === 'password') {
@@ -33,28 +37,59 @@ export default class LoginPage extends Component {
 
   submit(event){
     event.preventDefault();
-    if(this.state.username=="kokkuan01" && this.state.password=="123456"){
+    let url = config.settings.serverPath + "/api/login";
+
+    fetch(url,{
+      method: 'POST',                       
+      headers: {
+        Accept: 'application/json',          
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({                
+        email: this.state.email,
+        password: this.state.password
+      }),
+    }).then((response) => {
+      
+      return response.json();
+    }).then((response)=>{
+      console.log(response.error);
+      if(response.error!==undefined && response !== null){
+        if(response.error === 404){
+          this.setState({
+            status:404
+          });
+        }
+        if(response.error === 400){
+          this.setState({
+            status:400
+          });
+        }
+      }
+      else{
+        cookies.set('username',response.name,{ path: '/' });
         this.setState({
-            error:false,
-            isLogin:true
+          status:200
         });
-    }
-    else{
-        this.setState({
-          error:true
-        });
-    }
+      }
+      this.forceUpdate();
+    });
   }
 
   render() {
-    let errorMessage = <div></div>;
+    let errorMessage = <div className="ErrorMessage"></div>;
 
-    if(this.state.error){
-      errorMessage = <div className="ErrorMesage">Invalid Username Or Password</div>
-    }
-
-    if(this.state.isLogin === true){
-      return(<Redirect to="/inbox"/>);
+    if(this.state.status){
+      console.log(this.state.status);
+      if(this.state.status === 404){
+        errorMessage = <div className="ErrorMessage">Invalid Email</div>
+      }
+      else if(this.state.status === 400){
+        errorMessage = <div className="ErrorMessage">Invalid Password</div>
+      }
+      else if(this.state.status === 200){
+        return(<Redirect to="/inbox"/>);
+      }
     }
 
     return (
@@ -65,7 +100,7 @@ export default class LoginPage extends Component {
               <img className="Logo" src="/images/logo.png" alt="Befrienders"/>
             </div>
             <form className="Form" method="post" onSubmit={this.submit}>
-              <input className="form-control form-control-lg" onChange={this.handleChange} placeholder="Username" type="text" name="username" required/>
+              <input className="form-control form-control-lg" onChange={this.handleChange} placeholder="Email" type="text" name="email" required/>
               <br/>
 
               <input onChange={this.handleChange} placeholder="Password" type="password" name="password" required/>

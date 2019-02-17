@@ -21,7 +21,7 @@ export default class App extends Component{
           <Route exact path='/inbox/replying' component={ReplyingPage}/>
           <Route exact path='/inbox/sent' component={SentPage}/>
           <Route exact path='/inbox/account' component={AdminMainPage}/>
-          <Route exact path='/inbox/createclient' component={NewClientPage}/>
+          <Route exact path='/inbox/createclient/:id' component={NewClientPage}/>
           <Route exact path='/inbox/report' component={ChartPage}/>
           <Route exact path='/inbox/:id' component={EmailPage}/>
           <Route exact path='/inbox/account/create' component={AdminCreatePage}/>
