@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 */
 
 Route::post('login', 'LoginController@login');
+Route::get('checkUserType', 'LoginController@getUserType');
+
 Route::get('users', 'AccountController@index');
 Route::post('users/create', 'AccountController@store');
 Route::delete('users/{user}', 'AccountController@destroy');
@@ -22,6 +24,7 @@ Route::put('users/{user}', 'AccountController@update');
 Route::get('inbox', 'InboxController@index');
 Route::get('checkClient/{thread}', 'InboxController@checkClient');
 Route::post('addClientInfo/{client}', 'InboxController@updateClient');
+Route::get('/getThread/{thread}', 'InboxController@getThreadDetail');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

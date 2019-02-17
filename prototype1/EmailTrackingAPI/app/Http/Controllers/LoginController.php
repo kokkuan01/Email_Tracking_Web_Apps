@@ -23,10 +23,18 @@ class LoginController extends Controller
                 'message' => 'Incorrect Passwod'
             ], 400);
         }
-        $_SESSION['user'] = $user;
+        $request->session()->put('user', $user);
         
         return response()->json([
             'name'=>$user->name
         ], 200);
+    }
+
+    public function getUserType(Request $request){
+        if($request->session()->has('user')){
+            return response()->json([
+                'role'=>$request->session()->get('user')
+            ], 200);
+        }
     }
 }

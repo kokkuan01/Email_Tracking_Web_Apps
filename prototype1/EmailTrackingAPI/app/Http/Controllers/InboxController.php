@@ -87,4 +87,12 @@ class InboxController extends Controller
             "client" => $client,
         ],200);
     }
+
+    public function getThreadDetail($id){
+        $thread = Thread::with('client','replies')->find($id);
+
+        return response()->json([
+            'threadDetail'=>$thread
+        ],200);
+    }
 }
