@@ -15,7 +15,11 @@ export default class AdminMainPage extends Component{
       users:[],
       id:-1,
       error:null,
-      status:null
+      status:null,
+      notLogin:null,
+      token:sessionStorage.getItem('token')?sessionStorage.getItem('token'): null,
+      error:this.props.location.state?this.props.location.state.error:"none",
+      isAdmin:sessionStorage.getItem('role') === '2'?true:false
     }
 
     this.logout = this.logout.bind(this);
@@ -24,23 +28,37 @@ export default class AdminMainPage extends Component{
     this.displayTable = this.displayTable.bind(this);
   }
 
-  componentDidMount(){
+  componentWillMount(){
     let url = config.settings.serverPath + "/api/users";
-    fetch(url)
+    fetch(url,{
+      method:'GET',
+      headers:{
+        Accept: 'application/json',
+        'Authorization': 'Bearer ' + this.state.token,
+      }
+    })
     .then(response=>{
       return response.json();
     })
     .then((users)=>{
-      console.log(users);
-      this.setState({
-        users:users
-      });
+      if(users.message !== undefined && users.message !== null){
+        if(users.message.includes("Unauthenticated")){
+          this.setState({
+            notLogin:true
+          });
+        }
+      }
+      else{
+        this.setState({
+          users:users,
+          notLogin:false
+        });
+      }
     })
   }
   
   deleteItem(){
     let url = config.settings.serverPath + "/api/users/" + this.state.id;
-    console.log(url);
     fetch(url,{
       method:"DELETE",
       header:{
@@ -159,8 +177,12 @@ export default class AdminMainPage extends Component{
   render() {
     let successMessage = "none";
 
-    if(this.state.logout){
-      return(<Redirect to="/"/>);
+    if(!this.state.isAdmin){
+      return(<Redirect to="/inbox"/>);
+    }
+
+    if(this.state.notLogin === true){
+      return(<Redirect to={{pathname:"/" ,state:{error:"block"}}}/>);
     }
 
     if(this.state.status!=null){
@@ -169,54 +191,63 @@ export default class AdminMainPage extends Component{
       }
     }
 
-    return (
-      <div className="container">
-        <Header logout={this.logout}/>
-        <div className="content">
-          {this.displayModal()}
-          <div className="row">
-            <NavigationBar type="manage"/>
-            <div className="modal" id="successMessage" tabIndex="-1" role="dialog" style={{display:successMessage,overflowX:"hidden",boxShadow:"0 0 0 5000px rgba(0, 0, 0, 0.75)"}}>
-                    <div className="modal-dialog modal-dialog-centered" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Success</h5>
-                            </div>
-                            <div className="modal-body">
-                                Delete Successfully
-                            </div>
-                            <div className="modal-footer">
-                            <button type="button" className="btn btn-primary" onClick={()=>{document.getElementById("successMessage").style.display="none"}}>Ok</button>
-                            </div>
-                        </div>
+    if(this.state.notLogin === false){
+      return (
+        <div className="container">
+          <Header logout={this.logout}/>
+          <div className="content">
+            {this.displayModal()}
+            <div className="row">
+              <NavigationBar type="manage"/>
+              <div className="modal" id="successMessage" tabIndex="-1" role="dialog" style={{display:successMessage,overflowX:"hidden",boxShadow:"0 0 0 5000px rgba(0, 0, 0, 0.75)"}}>
+                <div className="modal-dialog modal-dialog-centered" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title">Success</h5>
                     </div>
+                    <div className="modal-body">
+                      Delete Successfully
+                    </div>
+                    <div className="modal-footer">
+                      <button type="button" className="btn btn-primary" onClick={()=>{document.getElementById("successMessage").style.display="none"}}>Ok</button>
+                    </div>
+                  </div>
                 </div>
-            <div className="col-md-10">
-              <div className="tab-content">
-                <div className="tab-pane fade in active" id="home">
-                  <div className="list-group" style={{overflow: 'auto',maxHeight:550}}>
-                        <div className="container-fluid">
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <h3>
-                                        Account Management
-                                    </h3>
-                                    <Link to="/inbox/account/create" className="btn btn-success">
-                                        Create New Account
-                                    </Link>
-                                    {this.displayTable()}
-                                    <div className="row">
-                                </div>
-                            </div>
-                        </div>
+              </div>
+              <div className="col-md-10">
+                <div className="tab-content">
+                  <div className="tab-pane fade in active" id="home">
+                    <div className="list-group" style={{overflow: 'auto',maxHeight:550}}>
+                          <div className="container-fluid">
+                              <div className="row">
+                                  <div className="col-md-12">
+                                      <h3>
+                                          Account Management
+                                      </h3>
+                                      <Link to="/inbox/account/create" className="btn btn-success">
+                                          Create New Account
+                                      </Link>
+                                      {this.displayTable()}
+                                      <div className="row">
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <div style={{display:this.state.error}} id = "alert" className="navbar-fixed-top alert alert-danger">
+            <button className="close" onClick={()=>document.getElementById('alert').style.display="none"}>&times;</button>
+            <strong>Please access the update page with Update Button</strong>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    else{
+      return(<div></div>);
+    }
   }
 }

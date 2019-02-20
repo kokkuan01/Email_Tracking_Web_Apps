@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import '../css/LoginPage.css';
 import {Redirect} from 'react-router';
-import Cookies from 'universal-cookie';
 
 const config = require('../config');
-const cookies = new Cookies();
 
 export default class LoginPage extends Component {
 
@@ -15,7 +13,8 @@ export default class LoginPage extends Component {
       email:'',
       password:'',
       username:'',
-      status:null
+      status:null,
+      error:this.props.location.state?this.props.location.state.error:"none"
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -50,7 +49,6 @@ export default class LoginPage extends Component {
         password: this.state.password
       }),
     }).then((response) => {
-      
       return response.json();
     }).then((response)=>{
       console.log(response.error);
@@ -67,7 +65,10 @@ export default class LoginPage extends Component {
         }
       }
       else{
-        cookies.set('username',response.name,{ path: '/' });
+        sessionStorage.setItem('username', response.name);
+        sessionStorage.setItem('token',response.success.token);
+        sessionStorage.setItem('role',response.role);
+        sessionStorage.setItem('id',response.id);
         this.setState({
           status:200
         });
@@ -82,10 +83,7 @@ export default class LoginPage extends Component {
     if(this.state.status){
       console.log(this.state.status);
       if(this.state.status === 404){
-        errorMessage = <div className="ErrorMessage">Invalid Email</div>
-      }
-      else if(this.state.status === 400){
-        errorMessage = <div className="ErrorMessage">Invalid Password</div>
+        errorMessage = <div className="ErrorMessage">Invalid Email Or Password</div>
       }
       else if(this.state.status === 200){
         return(<Redirect to="/inbox"/>);
@@ -110,6 +108,10 @@ export default class LoginPage extends Component {
               </button>
             </form>
           </div>
+        </div>
+        <div style={{display:this.state.error}} id = "alert" className="navbar-fixed-top alert alert-danger">
+          <button className="close" onClick={()=>document.getElementById('alert').style.display="none"}>&times;</button>
+          <strong>Please Login Before Perform Anything</strong>
         </div>
       </div>
     );

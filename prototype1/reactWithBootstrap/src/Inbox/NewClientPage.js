@@ -7,82 +7,135 @@ import NavigationBar from '../Common/NavigationBar';
 const config = require('../config');
 
 export default class NewClientPage extends Component{
-    constructor(props){
-      super(props);
-      this.state={
-          name:'',
-          age:'',
-          race:0,
-          nationality:0,
-          job:'',
-          to:null
-      };
-  
-      this.onSubmit = this.onSubmit.bind(this);
-      this.handleChange = this.handleChange.bind(this);
-    }
-  
-    handleChange(event){
-      if(event.target.name === 'name'){
-        this.setState({
-          name:event.target.value
-        });
-      }
-      else if (event.target.name === 'age') {
-        this.setState({
-          age:event.target.value
-        });
-      }
-      else if (event.target.name === 'race') {
-        this.setState({
-          race:event.target.value
-        });
-      }
-      else if (event.target.name === 'nationality') {
-        this.setState({
-          nationality:event.target.value
-        },this.render);
-      }
-      else if (event.target.name === 'job') {
-        this.setState({
-          job:event.target.value
-        },this.render);
-      }
-    }
-  
-    onSubmit(e){
-      e.preventDefault();
+  constructor(props){
+    super(props);
+    this.state={
+      trueClient:this.props.location.state?this.props.location.state.clientId:-1,
+      type:this.props.location.state?this.props.location.state.type:"none",
+      name:'',
+      age:'',
+      race:0,
+      nationality:0,
+      job:'',
+      to:null,
+      notLogin:null,
+      token:sessionStorage.getItem('token')?sessionStorage.getItem('token'): null
+    };
 
-      let url = config.settings.serverPath + "/api/addClientInfo/" + this.props.location.state.clientId;
-      fetch(url,{
-        method:"POST",
-        headers:{
-          Accept:'application/json',
-          'Content-type':'application/json'
-        },
-        body:JSON.stringify({
-          name:this.state.name,
-          age:this.state.age,
-          race:this.state.race,
-          nationality:this.state.nationality,
-          job:this.state.job
-        })
-      }).then(response=>{
-        if(response.status === 200){
+    this.onSubmit = this.onSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentWillMount(){
+    let url = config.settings.serverPath + "/api/inbox?type=unreply";
+    fetch(url,{
+      method:'GET',
+      headers:{
+        Accept: 'application/json',
+        'Authorization': 'Bearer ' + this.state.token,
+      }
+    })
+    .then(response=>{
+      return response.json();
+    })
+    .then(result=>{
+      if(result.message !== undefined && result.message !== null){
+        if(result.message.includes("Unauthenticated")){
           this.setState({
-            to:'/inbox/' + this.props.location.state.threadId
+            notLogin:true
           });
         }
-      })
+      }
+      else{
+        this.setState({
+          data:result.items,
+          notLogin:false
+        });
+      }
+    });
+  }
+
+  handleChange(event){
+    if(event.target.name === 'name'){
+      this.setState({
+        name:event.target.value
+      });
     }
-  
-    render(){
-      if(this.state.to !== null){
+    else if (event.target.name === 'age') {
+      this.setState({
+        age:event.target.value
+      });
+    }
+    else if (event.target.name === 'race') {
+      this.setState({
+        race:event.target.value
+      });
+    }
+    else if (event.target.name === 'nationality') {
+      this.setState({
+        nationality:event.target.value
+      },this.render);
+    }
+    else if (event.target.name === 'job') {
+      this.setState({
+        job:event.target.value
+      },this.render);
+    }
+  }
+
+  onSubmit(e){
+    e.preventDefault();
+    
+    let url = config.settings.serverPath + "/api/addClientInfo/" + this.props.location.state.clientId;
+    fetch(url,{
+      method:"POST",
+      headers:{
+        Accept:'application/json',
+        'Authorization': 'Bearer ' + this.state.token,
+        'Content-type':'application/json'
+      },
+      body:JSON.stringify({
+        name:this.state.name,
+        age:this.state.age,
+        race:this.state.race,
+        nationality:this.state.nationality,
+        job:this.state.job
+      })
+    }).then(response=>{
+      console.log(response.status);
+      if(response.status === 200){
+        this.setState({
+          to:'/inbox/' + this.props.location.state.threadId
+        });
+      }
+    })
+  }
+
+  render(){
+    if(this.state.to !== null){
+      if(this.state.type !== "none"){
+        return(
+          <Redirect to={{pathname:this.state.to,state:{threadId:this.props.location.state.threadId,type:this.state.type}}}/>
+        );
+      }
+      else{
         return(
           <Redirect to={{pathname:this.state.to,state:{threadId:this.props.location.state.threadId}}}/>
         );
       }
-  
+    }
+
+    if(this.state.trueClient === -1){
+      return(
+        <Redirect to={{pathname:"/inbox" ,state:{error:"block"}}}/>
+      );
+    }
+
+    if(this.state.notLogin === true){
+      return(<Redirect to={{pathname:"/" ,state:{error:"block"}}}/>);
+    }
+
+    if(this.state.notLogin === false){
       return(
         <div className="container">
           <Header/>
@@ -138,5 +191,9 @@ export default class NewClientPage extends Component{
       </div>
       );
     }
+    else{
+      return(<div></div>);
+    }
   }
+}
   

@@ -15,11 +15,11 @@ class CreateReplyTable extends Migration
     {
         Schema::create('replies', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('comment');
+            $table->text('comment');
             $table->integer('duration');
-            $table->string('thread_id');
+            $table->string('thread_id')->nullable();
             $table->foreign('thread_id')->references('threadId')->on('threads');
-            $table->unsignedInteger('user_id');
+            $table->unsignedInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });

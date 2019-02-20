@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use Illuminate\Support\Facades\Hash;
 
 class AccountController extends Controller
 {
@@ -32,6 +33,21 @@ class AccountController extends Controller
             'created_at' => $user->created_at,
         ], 201);
  
+    }
+
+    public function validateId($id){
+        $user = User::find($id);
+
+        if(!$user) {
+            return response()->json([
+                'error' => 404,
+                'message' => 'Not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'message'=>'Logon',
+        ],200);
     }
 
     public function update(Request $request, $id)
@@ -71,5 +87,30 @@ class AccountController extends Controller
             'users'=>User::all(),
             'message'=>"Delete Successfully"
         ],200);
+    }
+
+    public function resetPassword(Request $request){
+        $user = User::find($request->id);
+
+        if(!$user) {
+            return response()->json([
+                'error' => 404,
+                'message' => 'Not found'
+            ], 404);
+        }
+        
+        if(!Hash::check($request->oldPassword,$user->password)){
+            return response()->json([
+                'error' => 400,
+                'message' => 'Wrong Password'
+            ], 400);
+        }
+
+        $user->password = bcrypt($request->newPassword);
+        $user->save();
+
+        return response()->json([
+            'message' => 'success'
+        ], 200);
     }
 }

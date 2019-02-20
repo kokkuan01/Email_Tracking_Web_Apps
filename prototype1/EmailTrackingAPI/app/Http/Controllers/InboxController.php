@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Thread;
 use App\Mail;
 use App\Client;
+use App\Reply;
+use App\User;
 use App\Http\Resources\InboxCollection;
+use DB;
 
 class InboxController extends Controller
 {
@@ -30,7 +33,7 @@ class InboxController extends Controller
 
             $threads = Thread::with('client')
                 ->where('status',$status)
-                ->select('threads.*',\DB::raw('(SELECT date FROM mails where mails.thread_id = threads.threadId ORDER BY mails.date DESC LIMIT 1) as date'))
+                ->select('threads.*',DB::raw('(SELECT date FROM mails where mails.thread_id = threads.threadId ORDER BY mails.date DESC LIMIT 1) as date'))
                 ->orderBy('date','desc')
                 ->get();
             return response()->json([
@@ -89,10 +92,86 @@ class InboxController extends Controller
     }
 
     public function getThreadDetail($id){
-        $thread = Thread::with('client','replies')->find($id);
+        $thread = Thread::with('client','replies.user')->find($id);
+
+        if(!$thread) {
+            return response()->json([
+                'error' => 404,
+                'message' => 'Not found'
+            ], 404);
+        }
+
+        $status = $thread->status;
+        if($status != 2){
+            $thread->status = 1;
+            $thread->save();
+        }
 
         return response()->json([
-            'threadDetail'=>$thread
+            'threadDetail'=>$thread,
+            'status' => $status
+        ],200);
+    }
+
+    public function addComment(Request $request){
+        $thread = Thread::find($request->threadId);
+        $thread->status = 2;
+        $thread->save();
+
+        $reply = new Reply;
+        $reply->comment = $request->comment;
+        $reply->duration = $request->duration;
+        
+        $user = User::find($request->userId);
+
+        $thread->replies()->save($reply);
+        $user->replies()->save($reply);
+
+        return response()->json([
+            'message'=>'success'
+        ],200);
+    }
+
+    public function unlock($id){
+        $thread = Thread::find($id);
+        $thread->status = 0;
+        $thread->save();
+
+        return response()->json([
+            'message'=>'success'
+        ],200);
+    }
+
+    public function getStatistic($id){
+        $thread = Thread::where('id',$id)->first();
+
+        $replies = Reply::select('user_id')->where('thread_id',$thread->threadId)->groupBy('user_id')->get();
+        if(count($replies) == 0){
+            return response()->json([
+                'count'=>0
+            ],200);
+        }
+        
+        $count = count($replies);
+
+        $avgDuration = Reply::where('thread_id',$thread->threadId)->sum('duration') / $count;
+
+        $mostReplies = 
+            DB::select('(SELECT  user_id, COUNT(user_id) AS countValue 
+                FROM replies WHERE thread_id="'. $thread->threadId . '" 
+                GROUP BY user_id 
+                ORDER BY countValue DESC 
+                LIMIT 1)'
+            );
+        
+        $user = User::find($mostReplies[0]->user_id);
+
+        return response()->json([
+            'statistic'=>[
+                'count' => $count,
+                'most' => $user->name,
+                'avgDuration' => $avgDuration
+            ]
         ],200);
     }
 }

@@ -1,8 +1,5 @@
 import React, {Component} from 'react';
 import {Link, Redirect} from 'react-router-dom';
-import Cookies from 'universal-cookie';
-
-const cookies = new Cookies();
 
 export default class Header extends Component{
     constructor(props){
@@ -16,7 +13,11 @@ export default class Header extends Component{
       }
 
     logout(event){
-    this.setState({logout:true});
+        sessionStorage.removeItem('username');
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('role');
+        sessionStorage.removeItem('id');
+        this.setState({logout:true});
     }
 
     render(){
@@ -24,7 +25,7 @@ export default class Header extends Component{
             return(<Redirect to="/"/>);
         }
 
-        let username = cookies.get("username");
+        let username = sessionStorage.getItem('username');
         return(
             <div>
                 <div className="modal fade" id="logout" tabIndex="-1" role="dialog" aria-hidden="true">
@@ -53,6 +54,7 @@ export default class Header extends Component{
                                     <span className="caret"></span>
                                 </a>
                                 <ul className="dropdown-menu">
+                                    <li><Link to="/inbox/resetPassword">Reset Password</Link></li>
                                     <li><a href="#" data-toggle="modal" data-target="#logout">Sign Out</a></li>
                                 </ul>
                             </div>

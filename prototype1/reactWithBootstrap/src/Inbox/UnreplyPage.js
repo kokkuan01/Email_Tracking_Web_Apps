@@ -15,46 +15,80 @@ export default class UnreplyPage extends Component{
       data:null,
       to:null,
       clientId:-1,
-      threadId:-1
+      threadId:-1,
+      notLogin:null,
+      token:sessionStorage.getItem('token')?sessionStorage.getItem('token'): null,
+      error:this.props.location.state?this.props.location.state.error:"none",
+      isAdmin:sessionStorage.getItem('role') === '2'?true:false
     }
     
     this.redirect = this.redirect.bind(this);
   }
 
-  componentDidMount(){
+  componentWillMount(){
     let url = config.settings.serverPath + "/api/inbox?type=unreply";
-    fetch(url)
+    fetch(url,{
+      method:'GET',
+      headers:{
+        Accept: 'application/json',
+        'Authorization': 'Bearer ' + this.state.token,
+      }
+    })
     .then(response=>{
       return response.json();
     })
     .then(result=>{
-      this.setState({
-        data:result.items
-      },this.render);
+      if(result.message !== undefined && result.message !== null){
+        if(result.message.includes("Unauthenticated")){
+          this.setState({
+            notLogin:true
+          });
+        }
+      }
+      else{
+        this.setState({
+          data:result.items,
+          notLogin:false
+        });
+      }
     });
   }
 
   redirect(id){
-    let url = config.settings.serverPath + "/api/checkClient/" + id;
-    fetch(url)
-    .then(response=>{
-      return response.json();
-    })
-    .then(result=>{
-      if(result.fill === "required"){
-        this.setState({
-          to:"/inbox/createclient/" + result.id,
-          threadId:id,
-          clientId:result.id
-        },this.render);
-      }
-      else{
-        this.setState({
-          to:"/inbox/" + id,
-          threadId:id
-        },this.render);
-      }
-    });
+    if(!this.state.isAdmin){
+      let url = config.settings.serverPath + "/api/checkClient/" + id;
+      fetch(url,{
+        method:'GET',
+        headers:{
+          Accept: 'application/json',
+          'Authorization': 'Bearer ' + this.state.token,
+        }
+      })
+      .then(response=>{
+        return response.json();
+      })
+      .then(result=>{
+        if(result.fill === "required"){
+          this.setState({
+            to:"/inbox/createclient/" + result.id,
+            threadId:id,
+            clientId:result.id
+          });
+        }
+        else{
+          this.setState({
+            to:"/inbox/" + id,
+            threadId:id
+          });
+        }
+      });
+    }
+    else{
+      this.setState({
+        to:"/inbox/" + id,
+        threadId:id
+      });
+    }
   }
 
   render() {
@@ -72,43 +106,45 @@ export default class UnreplyPage extends Component{
       );
     }
 
-    return (
-      <div className="container">
-        <Header/>
-        <div className="content">
+    if(this.state.notLogin === true){
+      return(<Redirect to={{pathname:"/" ,state:{error:"block"}}}/>);
+    }
+
+    if(this.state.notLogin === false){
+      return (
+        <div className="container">
+          <Header/>
+          <div className="content">
           <div className="row">
-              <div className="col-sm-9 col-md-10">
-                  <button type="button" className="btn btn-default" data-toggle="tooltip" title="Refresh">
-                    <span className="glyphicon glyphicon-refresh"></span> 
-                  </button>
-                  <div className="pull-right">
-                    <span className="text-muted"><b>1</b>–<b>5</b> of <b>5</b></span>
-                    <div className="btn-group btn-group-sm">
-                        <button type="button" className="btn btn-default">
-                            <span className="glyphicon glyphicon-chevron-left"></span>
-                        </button>
-                        <button type="button" className="btn btn-default">
-                            <span className="glyphicon glyphicon-chevron-right"></span>
-                        </button>
-                    </div>
-                  </div>
+              <div style={{marginLeft:200}}>
+                  <span style={{fontSize:17}}>Search : </span>
+                  <input style={{width:400,paddingTop:15,margin:0}} type='text' name='age' className="form-control" onChange={this.handleChange}/>
+                  <button style={{marginLeft:5}} className="btn btn-primary btn-sm"><i className="fa fa-reply"></i> Search</button>
               </div>
-          </div>
-          <hr />
-          <div className="row">
-            <NavigationBar type="unreply"/>
-            <div className="col-md-10">
-              <div className="tab-content">
-                <div className="tab-pane fade in active" id="home">
-                  <div className="list-group" style={{overflow: 'auto',maxHeight:550}}>
-                      {EmailButtons}
+            </div>
+            <hr />
+            <div className="row">
+              <NavigationBar type="unreply"/>
+              <div className="col-md-10">
+                <div className="tab-content">
+                  <div className="tab-pane fade in active" id="home">
+                    <div className="list-group" style={{overflow: 'auto',maxHeight:550}}>
+                        {EmailButtons}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <div style={{display:this.state.error}} id = "alert" className="navbar-fixed-top alert alert-danger">
+            <button className="close" onClick={()=>document.getElementById('alert').style.display="none"}>&times;</button>
+            <strong>Please lock email by clicking email below</strong>
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
+    else{
+      return(<div></div>);
+    }
   }
 }

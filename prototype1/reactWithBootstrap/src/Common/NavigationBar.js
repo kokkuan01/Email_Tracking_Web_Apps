@@ -2,8 +2,16 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 
 export default class NavigationBar extends Component{
+    constructor(props){
+        super(props);
+    
+        this.state={
+            isAdmin:sessionStorage.getItem('role') === '2'?true:false
+        };
+      }
+
     render(){
-        if(!this.props.isAdmin && this.props.isAdmin!== undefined){
+        if(!this.state.isAdmin){
             return(
                 <div className="col-sm-2 col-md-2">
                     <ul className="nav nav-pills nav-stacked">

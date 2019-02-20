@@ -1,5 +1,12 @@
-body{margin-top:20px;
-background:#eee;
+body{
+  margin-top:20px;
+  background:#eee;
+}
+
+.ClientInfo{
+  margin-left:10px;
+  white-space: pre;
+  font-size: 15px;
 }
 
 .senden-img{

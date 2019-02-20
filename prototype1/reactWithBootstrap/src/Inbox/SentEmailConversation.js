@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
 
-class EmailConversation extends Component{
+class SentEmailConversation extends Component{
   constructor(props){
     super(props);
     this.state = {
@@ -10,13 +9,7 @@ class EmailConversation extends Component{
 
     this.displayComment = this.displayComment.bind(this);
     this.displayTitle = this.displayTitle.bind(this);
-    this.displayReply = this.displayReply.bind(this);
-    this.handleChange = this.handleChange.bind(this);
     this.convertIntToDuration = this.convertIntToDuration.bind(this);
-  }
-
-  handleChange(e){
-    this.setState({comment:e.target.value});
   }
 
   convertIntToDuration(num){
@@ -25,13 +18,13 @@ class EmailConversation extends Component{
     var second = num % 60;
 
     if(hour === 0 && minute === 0){
-      return second + " second ";
+      return second + " seconds ";
     }
     else if(hour === 0){
-      return minute + " minute " + second + " second ";
+      return minute + " minutes " + second + " seconds ";
     }
     else{
-      return hour + " hour " + minute + " minute " + second + " second ";
+      return hour + " hours " + minute + " minutes " + second + " seconds ";
     }
   }
 
@@ -58,20 +51,6 @@ class EmailConversation extends Component{
           </div>
       );
     }
-  }
-
-  displayReply(){
-    return(
-      <div className="panel-footer">
-        <div className="form-group">
-          <textarea className="form-control textarea" name="comment" rows="5" placeholder="Enter Comment Here" onChange={this.handleChange}/>
-          </div>
-        <div className="pull-right">
-            <button className="btn btn-success btn-sm" onClick={()=>{this.props.handleClick(this.state.comment)}}><i className="fa fa-reply"></i> Done</button>
-        </div>
-        <div className="clearfix"></div>
-      </div>
-    );
   }
 
   render(){
@@ -127,8 +106,9 @@ class EmailConversation extends Component{
                    </div>
                </div>
                <hr className="darkLine" style={{margin:0}}/>
-               {replies}
-               {this.displayReply()}
+               <div style={{minHeight:50,backgroundColor:"#f7f7f7"}}>
+                {replies}
+               </div>
            </div>
        </form>
    </div>
@@ -136,4 +116,4 @@ class EmailConversation extends Component{
   }
 }
 
-export default EmailConversation;
+export default SentEmailConversation;

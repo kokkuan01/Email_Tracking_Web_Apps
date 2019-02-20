@@ -21,9 +21,7 @@ class CreateGlobalVariablesTable extends Migration
         });
 
         $date = new DateTime();
-        $date->setTimestamp(time());
-        $date->setTimezone(new DateTimeZone('Asia/Kuala_Lumpur'));
-
+        
         DB::table('global_variables')->insert(
             array(
                 'name' => 'refreshToken',

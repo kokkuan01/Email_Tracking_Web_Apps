@@ -24,9 +24,7 @@ class CreateUsersTable extends Migration
         });
 
         $date = new DateTime();
-        $date->setTimestamp(time());
-        $date->setTimezone(new DateTimeZone('Asia/Kuala_Lumpur'));
-
+        
         DB::table('users')->insert(
             array(
                 'name' => 'Admin',

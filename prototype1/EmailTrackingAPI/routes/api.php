@@ -14,18 +14,24 @@ use Illuminate\Http\Request;
 */
 
 Route::post('login', 'LoginController@login');
-Route::get('checkUserType', 'LoginController@getUserType');
+Route::get('checkLogin',function(){
+    return response()->json([
+        "message"=>"Logon"
+    ],200);
+})->middleware('auth:api');
+Route::post('resetPassword','AccountController@resetPassword')->middleware('auth:api');
 
-Route::get('users', 'AccountController@index');
-Route::post('users/create', 'AccountController@store');
-Route::delete('users/{user}', 'AccountController@destroy');
-Route::put('users/{user}', 'AccountController@update');
+Route::get('validateAccount/{acc}','AccountController@validateId')->middleware('auth:api');
 
-Route::get('inbox', 'InboxController@index');
-Route::get('checkClient/{thread}', 'InboxController@checkClient');
-Route::post('addClientInfo/{client}', 'InboxController@updateClient');
-Route::get('/getThread/{thread}', 'InboxController@getThreadDetail');
+Route::get('users', 'AccountController@index')->middleware('auth:api');
+Route::post('users/create', 'AccountController@store')->middleware('auth:api');
+Route::delete('users/{user}', 'AccountController@destroy')->middleware('auth:api');
+Route::put('users/{user}', 'AccountController@update')->middleware('auth:api');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('inbox', 'InboxController@index')->middleware('auth:api');
+Route::get('checkClient/{thread}', 'InboxController@checkClient')->middleware('auth:api');
+Route::post('addClientInfo/{client}', 'InboxController@updateClient')->middleware('auth:api');
+Route::get('/getThread/{thread}', 'InboxController@getThreadDetail')->middleware('auth:api');
+Route::post('/addComment','InboxController@addComment')->middleware('auth:api');
+Route::get('/unlockForUnDone/{id}','InboxController@unlock')->middleware('auth:api');
+Route::get('/getThreadStatistic/{id}','InboxController@getStatistic')->middleware('auth:api');

@@ -159,6 +159,8 @@ class FetchGmailController extends Controller
 
                 $num = 0;
 
+                $threadSubject = '';
+
                 foreach($messages as $key => $message){
                     $emailId = $message->getId();
 
@@ -225,6 +227,10 @@ class FetchGmailController extends Controller
                                 $emailerName = $toDisplayName;
                                 $emailer = $to;
                             }
+                            $threadSubject = $subject;
+                        }
+
+                        if($threadSubject == ''){
                             $threadSubject = $subject;
                         }
 
