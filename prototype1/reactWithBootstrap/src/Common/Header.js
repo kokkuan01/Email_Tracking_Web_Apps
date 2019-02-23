@@ -1,32 +1,32 @@
-import React, {Component} from 'react';
-import {Link, Redirect} from 'react-router-dom';
+import React, { Component } from 'react';
+import { Link, Redirect } from 'react-router-dom';
 
-export default class Header extends Component{
-    constructor(props){
+export default class Header extends Component {
+    constructor(props) {
         super(props);
-    
-        this.state={
-          logout:false,
-        }
-    
-        this.logout = this.logout.bind(this);
-      }
 
-    logout(event){
+        this.state = {
+            logout: false,
+        }
+
+        this.logout = this.logout.bind(this);
+    }
+
+    logout(event) {
         sessionStorage.removeItem('username');
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('role');
         sessionStorage.removeItem('id');
-        this.setState({logout:true});
+        this.setState({ logout: true });
     }
 
-    render(){
-        if(this.state.logout){
-            return(<Redirect to="/"/>);
+    render() {
+        if (this.state.logout) {
+            return (<Redirect to="/" />);
         }
 
         let username = sessionStorage.getItem('username');
-        return(
+        return (
             <div>
                 <div className="modal fade" id="logout" tabIndex="-1" role="dialog" aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered" role="document">
@@ -47,12 +47,12 @@ export default class Header extends Component{
                 <div className="navbar navbar-fixed-top">
                     <div className="navbar-inner">
                         <div className="container-fluid">
-                            <Link className="brand" to="/inbox">Befrienders</Link>
+                            <Link className="brand" to="/inbox">Befrienders (Email Tracking System)</Link>
                             <div className="btn-group pull-right">
-                                <a className="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                    <i className="icon-user"></i> {username + " "} 
+                                <button className="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <i className="icon-user"></i> {username + " "}
                                     <span className="caret"></span>
-                                </a>
+                                </button>
                                 <ul className="dropdown-menu">
                                     <li><Link to="/inbox/resetPassword">Reset Password</Link></li>
                                     <li><a href="#" data-toggle="modal" data-target="#logout">Sign Out</a></li>

@@ -19,6 +19,7 @@ class CreateClientTable extends Migration
             $table->string('displayName')->nullable();
             $table->string('name')->nullable();
             $table->integer('age')->nullable();
+            $table->integer('gender')->nullable();
             $table->integer('race')->nullable();
             $table->string('job')->nullable();
             $table->integer('nationality')->nullable();

@@ -56,3 +56,29 @@ input[type="text"],input[type="password"],input[type="email"],input[type="number
   margin-bottom:10px;
   font-weight: 600;
 }
+
+h3.title {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+h3:after.title {
+  display: inline-block;
+  margin: 0 0 8px 20px;
+  height: 3px;
+  content: " ";
+  text-shadow: none;
+  background-color: #999;
+  width: 140px;
+}
+
+h3:before.title {
+  display: inline-block;
+  margin: 0 20px 8px 0;
+  height: 3px;
+  content: " ";
+  text-shadow: none;
+  background-color: #999;
+  width: 140px;
+}

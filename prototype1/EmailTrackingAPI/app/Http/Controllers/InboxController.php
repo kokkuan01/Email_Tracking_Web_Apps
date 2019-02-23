@@ -31,11 +31,32 @@ class InboxController extends Controller
                 ],404);
             }
 
-            $threads = Thread::with('client')
+            if($request->search != null){
+                $threads = Thread::with('client')
+                    ->where('status',$status)
+                    ->where(function($query) use($request){
+                        $query->where('subject','like', '%' . $request->search. '%')
+                            ->orWhereHas('client',function($subquery) use($request){
+                                $subquery->where('email','like', '%' . $request->search. '%');
+                            })
+                            ->orWhereHas('client',function($subquery) use($request){
+                                $subquery->where('displayName','like', '%' . $request->search. '%');
+                            });
+                    })
+                    ->select('threads.*',DB::raw('(SELECT date FROM mails where mails.thread_id = threads.threadId ORDER BY mails.date DESC LIMIT 1) as date'))
+                    ->orderBy('date','desc')
+                    ->paginate(50);
+            }
+            else{
+                $threads = Thread::with('client')
                 ->where('status',$status)
                 ->select('threads.*',DB::raw('(SELECT date FROM mails where mails.thread_id = threads.threadId ORDER BY mails.date DESC LIMIT 1) as date'))
                 ->orderBy('date','desc')
-                ->get();
+                ->paginate(50);
+            }
+
+            $threads->appends(['type' => $request->type])->links();
+            
             return response()->json([
                 'items' => $threads
             ],200);
@@ -80,6 +101,7 @@ class InboxController extends Controller
 
         $client->name = $request->name;
         $client->age = $request->age;
+        $client->gender = $request->gender;
         $client->race = $request->race;
         $client->nationality = $request->nationality;
         $client->job = $request->job;
@@ -116,6 +138,8 @@ class InboxController extends Controller
     public function addComment(Request $request){
         $thread = Thread::find($request->threadId);
         $thread->status = 2;
+        $thread->priority = $request->priority;
+        $thread->problem_type = $request->type;
         $thread->save();
 
         $reply = new Reply;

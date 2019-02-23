@@ -18,7 +18,7 @@ class CreateThreadsTable extends Migration
             $table->string('threadId')->unique();
             $table->string('subject')->nullable();
             $table->integer('priority')->nullable();
-            $table->string('problem_type')->nullable();
+            $table->integer('problem_type')->nullable();
             $table->integer('status')->nullable();
             $table->unsignedInteger('client_id')->nullable();
             $table->foreign('client_id')->references('id')->on('clients');

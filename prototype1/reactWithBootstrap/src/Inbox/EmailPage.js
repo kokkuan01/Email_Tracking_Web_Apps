@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom';
+import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import '../css/EmailPage.css';
 import EmailConversation from './EmailConversation';
 import AdminEmailConversation from '../Admin/AdminEmailConversation'
@@ -9,104 +9,110 @@ import SentEmailConversation from './SentEmailConversation';
 
 const config = require('../config');
 
-export default class EmailPage extends Component{
-  constructor(props){
+export default class EmailPage extends Component {
+  constructor(props) {
     super(props);
-    let time = (new Date).getTime();
-    this.state={
-      submit:false,
-      threadId:this.props.location.state?this.props.location.state.threadId:-1,
-      notLogin:null,
-      token:sessionStorage.getItem('token')?sessionStorage.getItem('token'): null,
-      thread:null,
-      isReplying:false,
-      wrongId:false,
-      startTime:time,
-      status:0,
-      redirect:null,
-      done:false,
-      type:this.props.location.state?this.props.location.state.type:"unreply",
-      isAdmin:sessionStorage.getItem('role') === '2'?true:false
+    let time = (new Date()).getTime();
+    this.state = {
+      submit: false,
+      threadId: this.props.location.state ? this.props.location.state.threadId : -1,
+      notLogin: null,
+      token: sessionStorage.getItem('token') ? sessionStorage.getItem('token') : null,
+      thread: null,
+      isReplying: false,
+      wrongId: false,
+      startTime: time,
+      status: 0,
+      redirect: null,
+      done: false,
+      type: this.props.location.state ? this.props.location.state.type : "unreply",
+      isAdmin: sessionStorage.getItem('role') === '2' ? true : false
     };
 
     this.handleClick = this.handleClick.bind(this);
   }
 
-  componentWillMount(){
+  componentWillMount() {
     let url = config.settings.serverPath + "/api/getThread/" + this.state.threadId;
-    fetch(url,{
-      method:'GET',
-      headers:{
+    fetch(url, {
+      method: 'GET',
+      headers: {
         Accept: 'application/json',
         'Authorization': 'Bearer ' + this.state.token,
       }
     })
-    .then(response=>{
-      if(response.status === 404){
-        this.setState({
-          wrongId:true
-        });
-      }
-      return response.json();
-    })
-    .then(result=>{
-      if(result.message !== undefined && result.message !== null){
-        if(result.message.includes("Unauthenticated")){
+      .then(response => {
+        if (response.status === 404) {
           this.setState({
-            notLogin:true
+            wrongId: true
           });
         }
-      }
-      else{
-        if(result.status === 1){
-          this.setState({
-            isReplying:true
-          });
+        return response.json();
+      })
+      .then(result => {
+        if (result.message !== undefined && result.message !== null) {
+          if (result.message.includes("Unauthenticated")) {
+            this.setState({
+              notLogin: true
+            });
+          }
         }
-        else{
-          this.setState({
-            status:result.status,
-            thread:result.threadDetail,
-            notLogin:false
-          });
-        }
-      }
-    })
-  }
-
-  handleClick(comment){
-    let current = (new Date).getTime();
-    let duration = (current - this.state.startTime) / 1000;
-    let url = config.settings.serverPath + "/api/addComment";
-      fetch(url,{
-        method:'POST',
-        headers:{
-          Accept: 'application/json',
-          'Authorization': 'Bearer ' + this.state.token,
-          'Content-type':'application/json'
-        },
-        body:JSON.stringify({
-          'threadId':this.state.threadId,
-          'comment':comment,
-          'duration':duration,
-          'userId':sessionStorage.getItem('id'),
-        })
-      }).then(response=>{
-        if(response.status === 200){
-          this.setState({
-            redirect:'/inbox/sent',
-            done:true
-          });
+        else {
+          if (result.status === 1) {
+            this.setState({
+              isReplying: true
+            });
+          }
+          else {
+            this.setState({
+              status: result.status,
+              thread: result.threadDetail,
+              notLogin: false
+            });
+          }
         }
       })
   }
 
-  componentWillUnmount(){
-    if(this.state.done === false && this.state.type === "unreply"){
+  handleClick(event,comment,type,priority) {
+    event.preventDefault();
+    let current = (new Date()).getTime();
+    let duration = (current - this.state.startTime) / 1000;
+    let url = config.settings.serverPath + "/api/addComment";
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Authorization': 'Bearer ' + this.state.token,
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        'threadId': this.state.threadId,
+        'comment': comment,
+        'type':type,
+        'priority':priority,
+        'duration': duration,
+        'userId': sessionStorage.getItem('id'),
+      })
+    }).then(response => {
+      if (response.status === 200) {
+        this.setState({
+          redirect: '/inbox/sent',
+          done: true
+        });
+      }
+    })
+  }
+
+  componentWillUnmount() {
+    console.log(this.state.done);
+    console.log(this.state.type);
+    if (this.state.done === false && this.state.type === "unreply") {
+
       let url = config.settings.serverPath + "/api/unlockForUnDone/" + this.state.threadId;
-      fetch(url,{
-        method:'GET',
-        headers:{
+      fetch(url, {
+        method: 'GET',
+        headers: {
           Accept: 'application/json',
           'Authorization': 'Bearer ' + this.state.token,
         }
@@ -115,33 +121,33 @@ export default class EmailPage extends Component{
   }
 
   render() {
-    if(this.state.redirect !== null){
-      return(<Redirect to={this.state.redirect}/>);
+    if (this.state.redirect !== null) {
+      return (<Redirect to={this.state.redirect} />);
     }
 
-    if(this.state.wrongId === true || this.state.isReplying === true){
-      return(<Redirect to={{pathname:"/inbox" ,state:{error:"block"}}}/>);
+    if (this.state.wrongId === true || this.state.isReplying === true) {
+      return (<Redirect to={{ pathname: "/inbox", state: { error: "block" } }} />);
     }
 
-    if(this.state.notLogin === true){
-      return(<Redirect to={{pathname:"/" ,state:{error:"block"}}}/>);
+    if (this.state.notLogin === true) {
+      return (<Redirect to={{ pathname: "/", state: { error: "block" } }} />);
     }
-    
-    if(this.state.notLogin === false){
+
+    if (this.state.notLogin === false) {
       return (
         <div className="container">
-          <Header/>
+          <Header />
           <div className="content">
             <div className="row">
-              <NavigationBar/>
-              {this.state.isAdmin?<AdminEmailConversation thread={this.state.thread}/>:this.state.type !=="sent"?<EmailConversation handleClick={this.handleClick} thread={this.state.thread}/>:<SentEmailConversation thread={this.state.thread}/>}
+              <NavigationBar />
+              {this.state.isAdmin ? <AdminEmailConversation thread={this.state.thread} /> : this.state.type !== "sent" ? <EmailConversation handleClick={this.handleClick} thread={this.state.thread} /> : <SentEmailConversation thread={this.state.thread} />}
             </div>
           </div>
         </div>
       );
     }
-    else{
-      return(<div></div>);
+    else {
+      return (<div></div>);
     }
 
   }

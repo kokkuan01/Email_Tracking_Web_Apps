@@ -35,3 +35,8 @@ Route::get('/getThread/{thread}', 'InboxController@getThreadDetail')->middleware
 Route::post('/addComment','InboxController@addComment')->middleware('auth:api');
 Route::get('/unlockForUnDone/{id}','InboxController@unlock')->middleware('auth:api');
 Route::get('/getThreadStatistic/{id}','InboxController@getStatistic')->middleware('auth:api');
+
+Route::get('/getGeneralData','ReportController@index')->middleware('auth:api');
+Route::get('/getVolunteerData','ReportController@getVolunteerData')->middleware('auth:api');
+Route::get('/getClientData','ReportController@getClientData')->middleware('auth:api');
+Route::get('/getEmailData','ReportController@getEmailData')->middleware('auth:api');
