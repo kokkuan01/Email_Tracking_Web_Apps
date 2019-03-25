@@ -11,6 +11,7 @@ import AdminCreatePage from './Admin/AccountManage/CreatePage';
 import AdminUpdatePage from './Admin/AccountManage/UpdatePage';
 import ChartPage from './Admin/ChartPage';
 import ResetPasswordPage from './Pages/ResetPasswordPage';
+import UpdateClientPage from './Inbox/UpdateClientPage';
 
 export default class App extends Component {
   render() {
@@ -23,6 +24,7 @@ export default class App extends Component {
           <Route exact path='/inbox/sent' component={SentPage} />
           <Route exact path='/inbox/account' component={AdminMainPage} />
           <Route exact path='/inbox/createclient/:id' component={NewClientPage} />
+          <Route exact path='/inbox/updateclient/:id' component={UpdateClientPage}/>
           <Route exact path='/inbox/report' component={ChartPage} />
           <Route exact path='/inbox/resetPassword' component={ResetPasswordPage} />
           <Route exact path='/inbox/:id' component={EmailPage} />

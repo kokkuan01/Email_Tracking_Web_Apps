@@ -16,8 +16,8 @@ class CreateMailsTable extends Migration
         Schema::create('mails', function (Blueprint $table) {
             $table->increments('id');
             $table->string('mailId')->unique();
-            $table->string('from')->index();
-            $table->string('to')->index();
+            $table->string('from',100)->index();
+            $table->string('to',100)->index();
             $table->dateTime('date');
             $table->string('thread_id');
             $table->foreign('thread_id')->references('threadId')->on('threads');

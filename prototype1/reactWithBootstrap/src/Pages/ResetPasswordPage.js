@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Redirect } from 'react-router-dom';
 import Header from '../Common/Header';
 import NavigationBar from '../Common/NavigationBar';
+import { ClipLoader } from 'react-spinners';
 
 const config = require('../config');
 
@@ -187,7 +188,14 @@ export default class ResetPasswordPage extends Component {
       );
     }
     else {
-      return (<div></div>);
+      return (<div className="loading">
+        <ClipLoader
+          css={{display: "block", margin: "0 auto",borderColor: "red"}}
+          sizeUnit={"px"}
+          size={70}
+          color={'#123abc'}
+        />
+      </div>);
     }
   }
 }

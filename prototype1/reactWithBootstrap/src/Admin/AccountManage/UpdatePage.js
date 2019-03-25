@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import Header from '../../Common/Header';
 import NavigationBar from '../../Common/NavigationBar';
+import { ClipLoader } from 'react-spinners';
 
 const config = require('../../config');
 
@@ -34,26 +35,26 @@ export default class AdminUpdatePage extends Component {
         'Authorization': 'Bearer ' + this.state.token,
       }
     })
-      .then(response => {
-        if (response.status === 404) {
-          this.setState({
-            wrongId: true
-          });
-        }
-        return response.json();
-      })
-      .then((result) => {
-        if (result.message.includes("Unauthenticated")) {
-          this.setState({
-            notLogin: true
-          });
-        }
-        else if (result.message.includes("Logon")) {
-          this.setState({
-            notLogin: false
-          });
-        }
-      })
+    .then(response => {
+      if (response.status === 404) {
+        this.setState({
+          wrongId: true
+        });
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result.message.includes("Unauthenticated")) {
+        this.setState({
+          notLogin: true
+        });
+      }
+      else if (result.message.includes("Logon")) {
+        this.setState({
+          notLogin: false
+        });
+      }
+    })
   }
 
   handleChange(event) {
@@ -159,9 +160,9 @@ export default class AdminUpdatePage extends Component {
                       </div>
                       <div>
                         <label>Type : </label>
-                        <select className="form-control" name="role" onChange={this.handleChange}>
-                          <option value="1" selected={this.state.role === '1'}>Volunteer</option>
-                          <option value="2" selected={this.state.role === '2'}>Administrator</option>
+                        <select className="form-control" name="role" onChange={this.handleChange} value="this.state.role">
+                          <option value="1">Volunteer</option>
+                          <option value="2">Administrator</option>
                         </select>
                       </div>
                       <br />
@@ -180,7 +181,14 @@ export default class AdminUpdatePage extends Component {
       );
     }
     else {
-      return (<div></div>);
+      return (<div className="loading">
+        <ClipLoader
+          css={{display: "block", margin: "0 auto",borderColor: "red"}}
+          sizeUnit={"px"}
+          size={70}
+          color={'#123abc'}
+        />
+      </div>);
     }
   }
 }

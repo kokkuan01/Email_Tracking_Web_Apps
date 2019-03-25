@@ -13,6 +13,7 @@ export default class EmailChart extends Component {
             genderCount: [],
             typeCount: [],
             priorityCount: [],
+            noData:false,
             token: sessionStorage.getItem('token') ? sessionStorage.getItem('token') : null,
         };
 
@@ -29,29 +30,38 @@ export default class EmailChart extends Component {
                 'Authorization': 'Bearer ' + this.state.token,
             }
         })
-            .then(response => {
-                return response.json();
-            })
-            .then((result) => {
-                if (result.CountOfEmail !== null) {
-                    this.setState({
-                        ageCount: result.ageCount,
-                        raceCount: result.raceCount,
-                        genderCount: result.genderCount,
-                        typeCount: result.typeCount,
-                        priorityCount: result.priorityCount
-                    }, this.displayChart);
-                }
-            });
+        .then(response => {
+            return response.json();
+        })
+        .then((result) => {
+            if(result.message === 'no data'){
+                this.setState({
+                    noData:true
+                });
+            }
+            else{
+                this.setState({
+                    ageCount: result.ageCount,
+                    raceCount: result.raceCount,
+                    genderCount: result.genderCount,
+                    typeCount: result.typeCount,
+                    priorityCount: result.priorityCount,
+                    noData:false
+                }, this.displayChart);
+            }
+        });
     }
 
     getNewMonthData(month){
-        window.chart1.destroy();
-        window.chart2.destroy();
-        window.chart3.destroy();
-        window.chart4.destroy();
-        window.chart5.destroy();
-
+        if(!this.state.noData){
+            console.log("Destroy");
+            window.chart1.destroy();
+            window.chart2.destroy();
+            window.chart3.destroy();
+            window.chart4.destroy();
+            window.chart5.destroy();
+        }
+        
         let url = config.settings.serverPath + '/api/getEmailData?month=' + month;
         fetch(url, {
             method: 'GET',
@@ -60,20 +70,26 @@ export default class EmailChart extends Component {
                 'Authorization': 'Bearer ' + this.state.token,
             }
         })
-            .then(response => {
-                return response.json();
-            })
-            .then((result) => {
-                if (result.CountOfEmail !== null) {
-                    this.setState({
-                        ageCount: result.ageCount,
-                        raceCount: result.raceCount,
-                        genderCount: result.genderCount,
-                        typeCount: result.typeCount,
-                        priorityCount: result.priorityCount
-                    }, this.displayChart);
-                }
-            });
+        .then(response => {
+            return response.json();
+        })
+        .then((result) => {
+            if(result.message === 'no data'){
+                this.setState({
+                    noData:true
+                });
+            }
+            else{
+                this.setState({
+                    ageCount: result.ageCount,
+                    raceCount: result.raceCount,
+                    genderCount: result.genderCount,
+                    typeCount: result.typeCount,
+                    priorityCount: result.priorityCount,
+                    noData:false
+                }, this.displayChart);
+            }
+        });
     }
 
     displayChart() {
@@ -297,6 +313,9 @@ export default class EmailChart extends Component {
     }
 
     render() {
+        if(this.state.noData){
+            return (<h3>No Data Yet For This Month</h3>);
+        }
         return (
             <div>
                 <h3>Email Report (Monthly)</h3>

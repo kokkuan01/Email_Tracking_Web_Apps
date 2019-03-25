@@ -289,3 +289,25 @@ form .form-group {
 .darkLine{
   border-bottom: black 1px solid;
 }
+
+.ClientLabel{
+  border-width: 1px;
+  border-color: #ddd;
+  border-style: solid;
+  height: 30px;
+  padding-left: 10px;
+  width: 100px;
+}
+
+.ClientData{
+  border-width: 1px;
+  border-color: #ddd;
+  border-style: solid;
+  height: 30px;
+  padding-left: 10px;
+  width: 300px;
+}
+
+.ClientTable tr:nth-child(even) {
+  background-color: #f2f2f2;
+}

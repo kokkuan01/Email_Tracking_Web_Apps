@@ -184,6 +184,12 @@ class ReportController extends Controller
             ->whereBetween('date', [$startDate,$endDate])
             ->get();
 
+        if(count($mails) == 0){
+            return response()->json([
+                'message' => 'no data'
+            ],200);
+        }
+
         $age = array(0,0,0,0,0);
         $races = array(0,0,0,0);
         $gender = array(0,0);

@@ -10,34 +10,17 @@ class SentEmailConversation extends Component {
 
     this.displayComment = this.displayComment.bind(this);
     this.displayTitle = this.displayTitle.bind(this);
-    this.convertIntToDuration = this.convertIntToDuration.bind(this);
-  }
-
-  convertIntToDuration(num) {
-    var hour = Math.floor(num / 3600);
-    var minute = Math.floor(num / 60);
-    var second = parseInt(num % 60);
-
-    if (hour === 0 && minute === 0) {
-      return second + " seconds ";
-    }
-    else if (hour === 0) {
-      return minute + " minutes " + second + " seconds ";
-    }
-    else {
-      return hour + " hours " + minute + " minutes " + second + " seconds ";
-    }
   }
 
   displayTitle(item) {
     return (
-      <div className="header panel-sub-heading inner-all">
+      <div className="header panel-sub-heading inner-all" key={item.id}>
         <div className="row">
           <div style={{ paddingLeft: 30, paddingTop: 10, fontSize: 17 }} className="col-md-8 col-sm-8 col-xs-7"> {this.displayComment(item.comment)}</div>
           <div className="pull-left col-md-4 col-sm-4 col-xs-5">
             <p className="pull-right" style={{ margin: 0 }}>Replied By : {item.user.name}</p>
             <br />
-            <p className="pull-right"> Duration : {this.convertIntToDuration(item.duration)}</p>
+            <p className="pull-right"> Replied at : {item.created_at}</p>
           </div>
         </div>
       </div>
@@ -104,33 +87,48 @@ class SentEmailConversation extends Component {
                 <h3>Client Information:</h3>
                 <div className="pull-right" style={{ margin: 0 }}>
                   <span>Problem Type : </span>
-                  <select className="form-control" name="type" onChange={this.handleChange} style={{width:150}} disabled>
-                    <option value="1" selected={this.state.type === 1}>Relationship</option>
-                    <option value="2" selected={this.state.type === 2}>Illness</option>
-                    <option value="3" selected={this.state.type === 3}>Marital</option>
-                    <option value="4" selected={this.state.type === 4}>Psychiatric</option>
-                    <option value="5" selected={this.state.type === 5}>Work</option>
-                    <option value="6" selected={this.state.type === 6}>Family</option>
-                    <option value="7" selected={this.state.type === 7}>Financial</option>
-                    <option value="8" selected={this.state.type === 8}>Suicide</option>
+                  <select className="form-control" name="type" onChange={this.handleChange} style={{width:150}} value={this.state.type} disabled>
+                    <option value="1">Relationship</option>
+                    <option value="2">Illness</option>
+                    <option value="3">Marital</option>
+                    <option value="4">Psychiatric</option>
+                    <option value="5">Work</option>
+                    <option value="6">Family</option>
+                    <option value="7">Financial</option>
+                    <option value="8">Suicide</option>
                   </select>
                   <div style={{marginTop:15,paddingLeft:43}}>
                     <span>Priority : </span>
-                    <select className="form-control" name="priority" onChange={this.handleChange} style={{width:150}} disabled>
-                      <option value="1" selected={this.state.priority === 1}>Low</option>
-                      <option value="2" selected={this.state.priority === 2}>Medium</option>
-                      <option value="3" selected={this.state.priority === 3}>High</option>
+                    <select className="form-control" name="priority" onChange={this.handleChange} style={{width:150}} value={this.state.priority} disabled>
+                      <option value="1">Low</option>
+                      <option value="2">Medium</option>
+                      <option value="3">High</option>
                     </select>
                   </div>
                 </div>
               </div>
-              <div className="ClientInfo">
-                {"Name : " + this.props.thread.client.name + "         Age : " + this.props.thread.client.age + "         Gender : " + gender}
-              </div>
-              <br />
-              <div className="ClientInfo">
-                {"Race : " + race + "         Nationality : " + nat + "         Job : " + this.props.thread.client.job}
-              </div>
+              <table className="ClientTable">
+                <tbody>
+                  <tr className="ClientRow">
+                    <td className="ClientLabel">Name</td><td className="ClientData">{this.props.thread.client.name}</td>
+                  </tr>
+                  <tr>
+                    <td className="ClientLabel">Age</td><td className="ClientData">{this.props.thread.client.age}</td>
+                  </tr>
+                  <tr>
+                    <td className="ClientLabel">Gender</td><td className="ClientData">{gender}</td>
+                  </tr>
+                  <tr>
+                    <td className="ClientLabel">Nationality</td><td className="ClientData">{nat}</td>
+                  </tr>
+                  <tr>
+                    <td className="ClientLabel">Race</td><td className="ClientData">{race}</td>
+                  </tr>
+                  <tr>
+                    <td className="ClientLabel">Job</td><td className="ClientData">{this.props.thread.client.job}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <div style={{ marginBottom: 40 }} className="panel-sub-heading inner ">
               <div className="pull-left">

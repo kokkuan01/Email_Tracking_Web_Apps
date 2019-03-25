@@ -33,12 +33,12 @@
 input[type="text"],input[type="password"],input[type="email"],input[type="number"]{
   background-color: #fff;
   border: 1px solid #E1EAF0;
-  padding: 20px 15px;
+  padding: 17px 15px;
   border-radius: 5px;
   cursor: text;
   width: 100%;
   transition: all 0.1s linear;
-  margin-bottom:15px;
+  margin-bottom:10px;
 }
 
 .Button{

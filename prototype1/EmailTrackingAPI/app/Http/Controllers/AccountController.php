@@ -32,7 +32,7 @@ class AccountController extends Controller
         return response()->json([
             'created_at' => $user->created_at,
         ], 201);
- 
+
     }
 
     public function validateId($id){

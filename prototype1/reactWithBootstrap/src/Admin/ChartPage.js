@@ -6,6 +6,7 @@ import NavigationBar from '../Common/NavigationBar';
 import ClientChart from './ClientChart';
 import EmailChart from './EmailChart';
 import VolunteerTable from './VolunteerTable';
+import { ClipLoader } from 'react-spinners';
 
 const config = require('../config');
 
@@ -231,7 +232,14 @@ export default class ChartPage extends Component {
       );
     }
     else {
-      return (<div></div>);
+      return (<div className="loading">
+        <ClipLoader
+          css={{display: "block", margin: "0 auto",borderColor: "red"}}
+          sizeUnit={"px"}
+          size={70}
+          color={'#123abc'}
+        />
+      </div>);
     }
   }
 }

@@ -15,7 +15,7 @@ class LoginController extends Controller
         if(Auth::attempt(['email' => request('email'), 'password' => request('password')])){ 
             $user = Auth::user();
             DB::DELETE('DELETE FROM oauth_access_tokens WHERE user_id=' . $user->id);
-            $success['token'] =  $user->createToken('MyApp')-> accessToken; 
+            $success['token'] =  $user->createToken('MyApp')->accessToken; 
             return response()->json([
                 'success' => $success,
                 'name' => $user->name,

@@ -30,7 +30,7 @@ class FetchGmailController extends Controller
         $client->setPrompt('consent');
 
         if (isset($_GET['code'])) {
-            $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
+            $token = $client->fetchAccessTokenWithRefreshToken($_GET['code']);
 
             $refreshToken = Global_Variable::where('name','refreshToken')->first();
             $refreshToken->value = $client->getRefreshToken();
@@ -62,8 +62,8 @@ class FetchGmailController extends Controller
         $refreshToken = Global_Variable::where('name','refreshToken')->first();
 
         if($refreshToken->value != null){
-            $client->setAccessType("offline");        // offline access
-            $client->addScope(Google_Service_Gmail::GMAIL_READONLY);
+            // $client->setAccessType("offline");        // offline access
+            // $client->addScope(Google_Service_Gmail::GMAIL_READONLY);
             try{
                 $token = $client->fetchAccessTokenWithRefreshToken($refreshToken->value);
                 $client->setAccessToken($token);

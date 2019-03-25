@@ -7,12 +7,13 @@ import { ClipLoader } from 'react-spinners';
 
 const config = require('../config');
 
-export default class NewClientPage extends Component {
+export default class UpdateClientPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       trueClient: this.props.location.state ? this.props.location.state.clientId : -1,
       type: this.props.location.state ? this.props.location.state.type : "none",
+      threadId: this.props.location.state ? this.props.location.state.threadId : -1,
       name: '',
       age: '',
       gender: 0,
@@ -21,7 +22,8 @@ export default class NewClientPage extends Component {
       job: '',
       to: null,
       notLogin: null,
-      token: sessionStorage.getItem('token') ? sessionStorage.getItem('token') : null
+      token: sessionStorage.getItem('token') ? sessionStorage.getItem('token') : null,
+      done:false
     };
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -29,7 +31,7 @@ export default class NewClientPage extends Component {
   }
 
   componentWillMount() {
-    let url = config.settings.serverPath + "/api/checkLogin";
+    let url = config.settings.serverPath + "/api/getClient/" + this.state.trueClient;
     fetch(url, {
       method: 'GET',
       headers: {
@@ -41,17 +43,38 @@ export default class NewClientPage extends Component {
       return response.json();
     })
     .then((result) => {
-      if (result.message.includes("Unauthenticated")) {
-        this.setState({
-          notLogin: true
-        });
+      if (result.message !== undefined && result.message !== null) {
+        if (result.message.includes("Unauthenticated")) {
+          this.setState({
+            notLogin: true
+          });
+        }
       }
-      else if (result.message.includes("Logon")) {
+      else {
         this.setState({
-          notLogin: false
-        });
+          notLogin: false,
+          name: result.client.name,
+          age: result.client.age,
+          gender: result.client.gender,
+          race: result.client.race,
+          nationality: result.client.nationality,
+          job: result.client.job,
+        })
       }
     })
+  }
+
+  componentWillUnmount() {
+    if (this.state.done === false && this.state.type === "unreply") {
+      let url = config.settings.serverPath + "/api/unlockForUnDone/" + this.state.threadId;
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Authorization': 'Bearer ' + this.state.token,
+        }
+      });
+    }
   }
 
   handleChange(event) {
@@ -109,7 +132,8 @@ export default class NewClientPage extends Component {
     }).then(response => {
       if (response.status === 200) {
         this.setState({
-          to: '/inbox/' + this.props.location.state.threadId
+          to: '/inbox/' + this.props.location.state.threadId,
+          done:true
         });
       }
     })
@@ -129,7 +153,7 @@ export default class NewClientPage extends Component {
       }
     }
 
-    if (this.state.trueClient === -1) {
+    if (this.state.trueClient === -1 || this.state.threadId === -1) {
       return (
         <Redirect to={{ pathname: "/inbox", state: { error: "block" } }} />
       );
@@ -150,26 +174,26 @@ export default class NewClientPage extends Component {
               <div className="col-md-10 maxHeight">
                 <div className="tab-content maxHeight">
                   <div className="tab-pane fade in active" id="home">
-                    <h3 className='lead no-margin'>Create New Client</h3>
+                    <h3 className='lead no-margin'>Update Client Info</h3>
                     <form method="post" onSubmit={this.onSubmit}>
                       <div className="form-group">
                         <label>Name : </label>
-                        <input type='text' name='name' className="form-control" onChange={this.handleChange} required/>
+                        <input type='text' name='name' className="form-control" onChange={this.handleChange} value={this.state.name} required/>
                       </div>
                       <div className="form-group">
                         <label>Age : </label>
-                        <input type='number' name='age' min='0' max='100' className="form-control" onChange={this.handleChange} required/>
+                        <input type='number' name='age' min='0' max='100' className="form-control" onChange={this.handleChange} value={this.state.age} required/>
                       </div>
                       <div className="form-group">
                         <label>Gender : </label>
-                        <select className="form-control" name="gender" onChange={this.handleChange}>
+                        <select className="form-control" name="gender" value={this.state.gender} onChange={this.handleChange}>
                           <option value="0">Male</option>
                           <option value="1">Female</option>
                         </select>
                       </div>
                       <div className="form-group">
                         <label>Race : </label>
-                        <select className="form-control" name="race" onChange={this.handleChange}>
+                        <select className="form-control" name="race" value={this.state.race} onChange={this.handleChange}>
                           <option value="0">Melayu</option>
                           <option value="1">Chinese</option>
                           <option value="2">Indian</option>
@@ -178,14 +202,14 @@ export default class NewClientPage extends Component {
                       </div>
                       <div>
                         <label>Nationality : </label>
-                        <select className="form-control" name="nationality" onChange={this.handleChange}>
+                        <select className="form-control" name="nationality" value={this.state.nationality} onChange={this.handleChange}>
                           <option value="0">Malaysian</option>
                           <option value="1">Non-Malaysian</option>
                         </select>
                       </div>
                       <div className="form-group">
                         <label>Job : </label>
-                        <input type='text' name='job' className="form-control" onChange={this.handleChange} required/>
+                        <input type='text' name='job' className="form-control" value={this.state.job} onChange={this.handleChange} required/>
                       </div>
                       <div>
                         <button type="submit" className="btn btn-primary">

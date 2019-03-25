@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import EmailButton from './EmailButton';
 import Header from '../Common/Header';
 import NavigationBar from '../Common/NavigationBar';
+import { ClipLoader } from 'react-spinners';
 
 const config = require('../config');
 
@@ -209,7 +210,7 @@ export default class SentPage extends Component {
                 <span style={{ fontSize: 17 }}>Search : </span>
                 <input style={{ width: 400, paddingTop: 15, margin: 0 }} type='text' name='age' className="form-control" onChange={this.handleChange} />
                 <button style={{ marginLeft: 5 }} className="btn btn-primary btn-sm" onClick={this.handleClick}><i className="fa fa-reply"></i> Search</button>
-                <div className="tooltip">
+                <div className="tooltip" style={{zIndex:10}}>
                   <img src="/images/icon.png" alt="!" style={{ height: 25, width: 25 }} />
                   <span className="tooltiptext">Search Email By Subject Or Client's Email</span>
                 </div>
@@ -230,9 +231,14 @@ export default class SentPage extends Component {
             <div className="row">
               <NavigationBar type="sent" />
               <div className="col-md-10">
+                <h3>Sent</h3>
                 <div className="tab-content">
                   <div className="tab-pane fade in active" id="home">
                     <div className="list-group" style={{ overflow: 'auto', maxHeight: 550 }}>
+                    <div>
+                      <div className="col-md-2" style={{backgroundColor:"white"}}><h5>Client Name</h5></div>
+                      <div className="col-md-10" style={{paddingLeft:80,backgroundColor:"white"}}><h5>Subject</h5></div>
+                    </div>
                       {EmailButtons}
                     </div>
                   </div>
@@ -244,7 +250,14 @@ export default class SentPage extends Component {
       );
     }
     else {
-      return (<div></div>);
+      return (<div className="loading">
+        <ClipLoader
+          css={{display: "block", margin: "0 auto",borderColor: "red"}}
+          sizeUnit={"px"}
+          size={70}
+          color={'#123abc'}
+        />
+      </div>);
     }
   }
 }

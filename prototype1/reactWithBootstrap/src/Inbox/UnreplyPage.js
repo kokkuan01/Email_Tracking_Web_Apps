@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import EmailButton from './EmailButton';
 import Header from '../Common/Header';
 import NavigationBar from '../Common/NavigationBar';
+import { ClipLoader } from 'react-spinners';
 
 const config = require('../config');
 
@@ -19,7 +20,8 @@ export default class UnreplyPage extends Component {
       threadId: -1,
       notLogin: null,
       token: sessionStorage.getItem('token') ? sessionStorage.getItem('token') : null,
-      error: this.props.location.state ? this.props.location.state.error : "none",
+      error: this.props.location.state ? this.props.location.state.error === "id"? "block": "none" : "none",
+      error2: this.props.location.state ? this.props.location.state.error === "isReplying"? "block": "none" : "none",
       isAdmin: sessionStorage.getItem('role') === '2' ? true : false,
       search: ''
     }
@@ -211,7 +213,7 @@ export default class UnreplyPage extends Component {
                 <span style={{ fontSize: 17 }}>Search : </span>
                 <input style={{ width: 400, paddingTop: 15, margin: 0 }} type='text' name='age' className="form-control" onChange={this.handleChange} />
                 <button style={{ marginLeft: 5 }} className="btn btn-primary btn-sm" onClick={this.handleClick}><i className="fa fa-reply"></i> Search</button>
-                <div className="tooltip">
+                <div className="tooltip" style={{zIndex:10}}>
                   <img src="/images/icon.png" alt="!" style={{ height: 25, width: 25 }} />
                   <span className="tooltiptext">Search Email By Subject Or Client's Email</span>
                 </div>
@@ -232,9 +234,15 @@ export default class UnreplyPage extends Component {
             <div className="row">
               <NavigationBar type="unreply" />
               <div className="col-md-10">
+                <h3>Pending To Reply</h3>
                 <div className="tab-content">
                   <div className="tab-pane fade in active" id="home">
                     <div className="list-group" style={{ overflow: 'auto', maxHeight: 550 }}>
+                    <div>
+                      <div className="col-md-2" style={{backgroundColor:"white"}}><h5>Client Name</h5></div>
+                      <div className="col-md-8" style={{paddingLeft:80,backgroundColor:"white"}}><h5>Subject</h5></div>
+                      <div className="col-md-2" style={{paddingLeft:30,backgroundColor:"white"}}><h5>Date</h5></div>
+                    </div>
                       {EmailButtons}
                     </div>
                   </div>
@@ -246,11 +254,22 @@ export default class UnreplyPage extends Component {
             <button className="close" onClick={() => document.getElementById('alert').style.display = "none"}>&times;</button>
             <strong>Please lock email by clicking email below</strong>
           </div>
+          <div style={{ display: this.state.error2 }} id="alert2" className="navbar-fixed-top alert alert-danger">
+            <button className="close" onClick={() => document.getElementById('alert2').style.display = "none"}>&times;</button>
+            <strong>The email is being replied by other volunteer</strong>
+          </div>
         </div>
       );
     }
     else {
-      return (<div></div>);
+      return (<div className="loading">
+        <ClipLoader
+          css={{display: "block", margin: "0 auto",borderColor: "red"}}
+          sizeUnit={"px"}
+          size={70}
+          color={'#123abc'}
+        />
+      </div>);
     }
   }
 }

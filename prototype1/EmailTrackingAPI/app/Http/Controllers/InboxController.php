@@ -18,12 +18,15 @@ class InboxController extends Controller
             $threadArray = array();
             if($request->type == "unreply"){
                 $status = 0;
+                $orderColumn = "date";
             }
             else if($request->type == "replying"){
                 $status = 1;
+                $orderColumn = "date";
             }
             else if($request->type == "sent"){
                 $status = 2;
+                $orderColumn = "updated_at";
             }
             else{
                 return response()->json([
@@ -44,14 +47,14 @@ class InboxController extends Controller
                             });
                     })
                     ->select('threads.*',DB::raw('(SELECT date FROM mails where mails.thread_id = threads.threadId ORDER BY mails.date DESC LIMIT 1) as date'))
-                    ->orderBy('date','desc')
+                    ->orderBy($orderColumn,'desc')
                     ->paginate(50);
             }
             else{
                 $threads = Thread::with('client')
                 ->where('status',$status)
                 ->select('threads.*',DB::raw('(SELECT date FROM mails where mails.thread_id = threads.threadId ORDER BY mails.date DESC LIMIT 1) as date'))
-                ->orderBy('date','desc')
+                ->orderBy($orderColumn,'desc')
                 ->paginate(50);
             }
 
@@ -86,6 +89,21 @@ class InboxController extends Controller
         return response()->json([
             'fill' => $fill,
             'id' => $client->id
+        ],200);
+    }
+
+    public function getClient($id){
+        $client = Client::find($id);
+
+        if(!$client) {
+            return response()->json([
+                'error' => 404,
+                'message' => 'Not found'
+            ], 404);
+        }
+
+        return response()->json([
+            "client" => $client,
         ],200);
     }
 

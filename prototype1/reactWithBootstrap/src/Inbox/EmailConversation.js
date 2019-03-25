@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Redirect} from 'react-router';
 
 class EmailConversation extends Component {
   constructor(props) {
@@ -7,16 +8,24 @@ class EmailConversation extends Component {
     this.state = {
       comment: '',
       type: this.props.thread.problem_type!==null?this.props.thread.problem_type:1,
-      priority:this.props.thread.priority!==null?this.props.thread.priority:1
+      priority:this.props.thread.priority!==null?this.props.thread.priority:1,
+      clientId:this.props.thread.client.id,
+      threadId:this.props.thread.id,
+      to:null
     };
 
-    console.log(this.state);
-    console.log(typeof(this.state.type));
     this.displayComment = this.displayComment.bind(this);
     this.displayTitle = this.displayTitle.bind(this);
     this.displayReply = this.displayReply.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.convertIntToDuration = this.convertIntToDuration.bind(this);
+    this.updateClient = this.updateClient.bind(this);
+  }
+
+  updateClient(event){
+    event.preventDefault();
+    this.setState({
+      to:"/inbox/updateClient/" + this.state.clientId,
+    });
   }
 
   handleChange(event) {
@@ -37,31 +46,15 @@ class EmailConversation extends Component {
     }
   }
 
-  convertIntToDuration(num) {
-    var hour = Math.floor(num / 3600);
-    var minute = Math.floor(num / 60);
-    var second = parseInt(num % 60);
-
-    if (hour === 0 && minute === 0) {
-      return second + " second ";
-    }
-    else if (hour === 0) {
-      return minute + " minute " + second + " second ";
-    }
-    else {
-      return hour + " hour " + minute + " minute " + second + " second ";
-    }
-  }
-
   displayTitle(item) {
     return (
-      <div className="header panel-sub-heading inner-all">
+      <div className="header panel-sub-heading inner-all" key={item.id}>
         <div className="row">
           <div style={{ paddingLeft: 30, paddingTop: 10, fontSize: 17 }} className="col-md-8 col-sm-8 col-xs-7"> {this.displayComment(item.comment)}</div>
           <div className="pull-left col-md-4 col-sm-4 col-xs-5">
             <p className="pull-right" style={{ margin: 0 }}>Replied By : {item.user.name}</p>
             <br />
-            <p className="pull-right"> Duration : {this.convertIntToDuration(item.duration)}</p>
+            <p className="pull-right"> Replied at : {item.created_at}</p>
           </div>
         </div>
       </div>
@@ -93,6 +86,12 @@ class EmailConversation extends Component {
   }
 
   render() {
+    if (this.state.to !== null) {
+      return (
+        <Redirect to={{ pathname: this.state.to, state: { clientId: this.state.clientId, threadId: this.state.threadId, type: "unreply" } }} />
+      );
+    }
+
     let gender = this.props.thread.client.gender;
     if (gender === 0) {
       gender = "Male";
@@ -142,33 +141,49 @@ class EmailConversation extends Component {
                 <h3>Client Information:</h3>
                 <div className="pull-right" style={{ margin: 0 }}>
                   <span>Problem Type : </span>
-                  <select className="form-control" name="type" onChange={this.handleChange} style={{width:150}} required>
-                    <option value="1" selected={this.state.type === 1}>Relationship</option>
-                    <option value="2" selected={this.state.type === 2}>Illness</option>
-                    <option value="3" selected={this.state.type === 3}>Marital</option>
-                    <option value="4" selected={this.state.type === 4}>Psychiatric</option>
-                    <option value="5" selected={this.state.type === 5}>Work</option>
-                    <option value="6" selected={this.state.type === 6}>Family</option>
-                    <option value="7" selected={this.state.type === 7}>Financial</option>
-                    <option value="8" selected={this.state.type === 8}>Suicide</option>
+                  <select className="form-control" name="type" onChange={this.handleChange} style={{width:150}} value={this.state.type} disabled>
+                    <option value="1">Relationship</option>
+                    <option value="2">Illness</option>
+                    <option value="3">Marital</option>
+                    <option value="4">Psychiatric</option>
+                    <option value="5">Work</option>
+                    <option value="6">Family</option>
+                    <option value="7">Financial</option>
+                    <option value="8">Suicide</option>
                   </select>
                   <div style={{marginTop:15,paddingLeft:43}}>
                     <span>Priority : </span>
-                    <select className="form-control" name="priority" onChange={this.handleChange} style={{width:150}} required>
-                      <option value="1" selected={this.state.priority === 1}>Low</option>
-                      <option value="2" selected={this.state.priority === 2}>Medium</option>
-                      <option value="3" selected={this.state.priority === 3}>High</option>
+                    <select className="form-control" name="priority" onChange={this.handleChange} style={{width:150}} value={this.state.priority} disabled>
+                      <option value="1">Low</option>
+                      <option value="2">Medium</option>
+                      <option value="3">High</option>
                     </select>
                   </div>
                 </div>
               </div>
-              <div className="ClientInfo">
-                {"Name : " + this.props.thread.client.name + "         Age : " + this.props.thread.client.age + "         Gender : " + gender}
-              </div>
-              <br />
-              <div className="ClientInfo">
-                {"Race : " + race + "         Nationality : " + nat + "         Job : " + this.props.thread.client.job}
-              </div>
+              <table className="ClientTable">
+                <tbody>
+                  <tr className="ClientRow">
+                    <td className="ClientLabel">Name</td><td className="ClientData">{this.props.thread.client.name}</td>
+                  </tr>
+                  <tr>
+                    <td className="ClientLabel">Age</td><td className="ClientData">{this.props.thread.client.age}</td>
+                  </tr>
+                  <tr>
+                    <td className="ClientLabel">Gender</td><td className="ClientData">{gender}</td>
+                  </tr>
+                  <tr>
+                    <td className="ClientLabel">Nationality</td><td className="ClientData">{nat}</td>
+                  </tr>
+                  <tr>
+                    <td className="ClientLabel">Race</td><td className="ClientData">{race}</td>
+                  </tr>
+                  <tr>
+                    <td className="ClientLabel">Job</td><td className="ClientData">{this.props.thread.client.job}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <button style={{marginTop:10}} className="btn btn-primary" onClick={this.updateClient}>Update Client Information</button>
             </div>
             <div style={{ marginBottom: 40 }} className="panel-sub-heading inner ">
               <div className="pull-left">

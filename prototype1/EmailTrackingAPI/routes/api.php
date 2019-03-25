@@ -30,6 +30,7 @@ Route::put('users/{user}', 'AccountController@update')->middleware('auth:api');
 
 Route::get('inbox', 'InboxController@index')->middleware('auth:api');
 Route::get('checkClient/{thread}', 'InboxController@checkClient')->middleware('auth:api');
+Route::get('getClient/{client}','InboxController@getClient')->middleware('auth:api');;
 Route::post('addClientInfo/{client}', 'InboxController@updateClient')->middleware('auth:api');
 Route::get('/getThread/{thread}', 'InboxController@getThreadDetail')->middleware('auth:api');
 Route::post('/addComment','InboxController@addComment')->middleware('auth:api');

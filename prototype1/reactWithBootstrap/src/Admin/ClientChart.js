@@ -31,14 +31,12 @@ export default class ClientChart extends Component {
                 return response.json();
             })
             .then((result) => {
-                if (result.CountOfEmail !== null) {
-                    this.setState({
-                        ageCount: result.ageCount,
-                        raceCount: result.raceCount,
-                        genderCount: result.genderCount,
-                        typeCount: result.typeCount,
-                    }, this.displayChart);
-                }
+                this.setState({
+                    ageCount: result.ageCount,
+                    raceCount: result.raceCount,
+                    genderCount: result.genderCount,
+                    typeCount: result.typeCount,
+                }, this.displayChart);
             });
     }
 

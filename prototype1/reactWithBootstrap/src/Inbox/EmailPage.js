@@ -6,6 +6,7 @@ import AdminEmailConversation from '../Admin/AdminEmailConversation'
 import Header from '../Common/Header';
 import NavigationBar from '../Common/NavigationBar';
 import SentEmailConversation from './SentEmailConversation';
+import { ClipLoader } from 'react-spinners';
 
 const config = require('../config');
 
@@ -105,8 +106,6 @@ export default class EmailPage extends Component {
   }
 
   componentWillUnmount() {
-    console.log(this.state.done);
-    console.log(this.state.type);
     if (this.state.done === false && this.state.type === "unreply") {
 
       let url = config.settings.serverPath + "/api/unlockForUnDone/" + this.state.threadId;
@@ -125,8 +124,12 @@ export default class EmailPage extends Component {
       return (<Redirect to={this.state.redirect} />);
     }
 
-    if (this.state.wrongId === true || this.state.isReplying === true) {
-      return (<Redirect to={{ pathname: "/inbox", state: { error: "block" } }} />);
+    if (this.state.wrongId === true) {
+      return (<Redirect to={{ pathname: "/inbox", state: { error: "id" } }} />);
+    }
+
+    if (this.state.isReplying === true) {
+      return (<Redirect to={{ pathname: "/inbox", state: { error: "isReplying" } }} />);
     }
 
     if (this.state.notLogin === true) {
@@ -147,7 +150,14 @@ export default class EmailPage extends Component {
       );
     }
     else {
-      return (<div></div>);
+      return (<div className="loading">
+        <ClipLoader
+          css={{display: "block", margin: "0 auto",borderColor: "red"}}
+          sizeUnit={"px"}
+          size={70}
+          color={'#123abc'}
+        />
+      </div>);
     }
 
   }

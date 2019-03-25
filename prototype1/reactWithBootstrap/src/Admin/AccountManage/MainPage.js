@@ -3,6 +3,7 @@ import '../../css/InboxPage.css';
 import { Link, Redirect } from 'react-router-dom';
 import Header from '../../Common/Header';
 import NavigationBar from '../../Common/NavigationBar';
+import { ClipLoader } from 'react-spinners';
 
 const config = require("../../config");
 
@@ -151,12 +152,12 @@ export default class AdminMainPage extends Component {
                   {item.updated_at}
                 </td>
                 <td>
-                  <Link to={{ pathname: "/inbox/account/update/" + item.id, state: { user: item } }} style={{ marginRight: 7 }} className="btn">
-                    Update
-                        </Link>
-                  <button type="button" className="btn btn-danger" data-toggle="modal" data-target="#deleteModal" onClick={() => { this.setState({ id: item.id }) }}>
-                    Delete
-                        </button>
+                  <Link to={{ pathname: "/inbox/account/update/" + item.id, state: { user: item } }} style={{ marginRight: 7 }}>
+                    <img className="Logo" src="/images/edit.png" alt="Edit" style={{width:20,height:20}}/>
+                  </Link>
+                  
+                    <img className="Logo" src="/images/delete.png" alt="Delete" style={{width:20,height:20,cursor:"pointer"}} data-toggle="modal" data-target="#deleteModal" onClick={() => { this.setState({ id: item.id }) }}/>
+      
                 </td>
               </tr>
             );
@@ -239,7 +240,14 @@ export default class AdminMainPage extends Component {
       );
     }
     else {
-      return (<div></div>);
+      return (<div className="loading">
+        <ClipLoader
+          css={{display: "block", margin: "0 auto",borderColor: "red"}}
+          sizeUnit={"px"}
+          size={70}
+          color={'#123abc'}
+        />
+      </div>);
     }
   }
 }
